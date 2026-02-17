@@ -1,149 +1,151 @@
-/* ===== ZEROS™ - style.css (FULL FILE) ===== */
+/* ===== Base ===== */
+* { box-sizing: border-box; }
 
-* {
-  box-sizing: border-box;
+html, body {
+  height: 100%;
 }
 
 body {
   margin: 0;
   font-family: Arial, sans-serif;
 
-  /* Background image */
-  background: url('IMG_5953.jpg') no-repeat center center fixed;
+  /* Background image (make sure IMG_5953.jpg is in the same folder) */
+  background: url("IMG_5953.jpg") no-repeat center center fixed;
   background-size: cover;
 
   color: #fff;
 
-  /* Center everything */
   display: flex;
   justify-content: center;
   align-items: center;
 
-  /* IMPORTANT: allow breathing room / alignment */
-  min-height: 100vh;
-  padding-top: 40px;
-  padding-bottom: 40px;
-
+  padding: 28px 16px;
   text-align: center;
+  position: relative;
 }
 
-/* Dark overlay to make text readable */
+/* Dark overlay for readability */
 body::before {
   content: "";
   position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: rgba(0,0,0,0.75);
+  inset: 0;
+  background: rgba(0,0,0,0.72);
   z-index: -1;
 }
 
+/* ===== Layout ===== */
 .container {
-  width: 90%;
+  width: 100%;
   max-width: 420px;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
 }
 
-h1 {
-  margin: 0 0 6px 0;
+.hero h1 {
+  margin: 0;
+  font-size: 44px;
   letter-spacing: 6px;
-  font-size: 46px;
   font-weight: 800;
+  text-shadow: 0 0 18px rgba(124,58,237,0.35);
+  animation: titleGlow 2.6s ease-in-out infinite;
+}
+
+.hero .tm {
+  font-size: 18px;
+  vertical-align: super;
+  letter-spacing: 0;
+  margin-left: 3px;
+  opacity: 0.95;
 }
 
 .tagline {
-  margin: 0 0 18px 0;
+  margin: 10px 0 0;
   color: #b8b8ff;
   font-size: 18px;
 }
 
-/* Glass card */
+/* ===== Card ===== */
 .card {
+  padding: 22px;
+  border-radius: 18px;
+
   background: rgba(0,0,0,0.40);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
 
-  padding: 26px;
-  border-radius: 18px;
-
-  border: 1px solid rgba(124, 58, 237, 0.35);
-
-  /* UPDATED: smoother premium glow */
+  border: 1px solid rgba(124,58,237,0.35);
   box-shadow:
-    0 0 25px rgba(124, 58, 237, 0.40),
-    0 20px 50px rgba(0, 0, 0, 0.70);
+    0 0 28px rgba(124,58,237,0.22),
+    0 18px 50px rgba(0,0,0,0.65);
+
+  animation: cardGlow 3.2s ease-in-out infinite;
 }
 
-.label {
-  font-size: 12px;
-  color: #aaa;
-  letter-spacing: 2px;
-  margin-bottom: 8px;
+/* small helper line */
+.helper {
+  margin: 12px 0 16px;
+  font-size: 13px;
+  color: rgba(255,255,255,0.70);
 }
 
-/* Phone number */
-.number {
-  /* UPDATED: bigger + bolder */
-  font-size: 26px;
-  font-weight: 800;
-  letter-spacing: 2px;
-
-  margin: 0 0 18px 0;
-}
-
-/* if the number is a link, force it to look clean */
-.number a {
-  color: #fff !important;
-  text-decoration: none !important;
-}
-
-/* Buttons */
+/* ===== Buttons ===== */
 .btn {
   display: block;
   width: 100%;
-  border: none;
-  border-radius: 14px;
-  padding: 18px 16px;
-  font-size: 18px;
+  padding: 16px 14px;
+  border-radius: 16px;
+  margin: 12px 0;
+
+  text-decoration: none;
   font-weight: 700;
-  cursor: pointer;
-  margin-top: 14px;
-  text-align: center;
+  font-size: 17px;
 
-  background: rgba(255,255,255,0.10);
   color: #fff;
+  background: rgba(255,255,255,0.10);
+  border: 1px solid rgba(255,255,255,0.14);
 
-  transition: transform 0.20s ease, box-shadow 0.20s ease, opacity 0.20s ease;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.35);
+  transition: transform 0.12s ease, box-shadow 0.12s ease, filter 0.12s ease;
 }
 
 .btn:active {
-  transform: scale(0.98);
-  opacity: 0.95;
+  transform: scale(0.985);
 }
 
-/* Main (purple->blue gradient) button */
+/* Primary button */
 .btn.primary {
-  background: linear-gradient(90deg, #7c3aed, #22d3ee);
-  color: #fff;
-  box-shadow: 0 0 18px rgba(124, 58, 237, 0.40);
+  background: linear-gradient(90deg, rgba(124,58,237,0.95), rgba(34,211,238,0.95));
+  border: 1px solid rgba(255,255,255,0.14);
+  box-shadow:
+    0 14px 30px rgba(0,0,0,0.40),
+    0 0 26px rgba(124,58,237,0.35);
 }
 
-/* UPDATED: hover glow (works best on desktop, harmless on phone) */
-.btn.primary:hover {
-  transform: scale(1.03);
-  box-shadow: 0 0 25px rgba(124, 58, 237, 0.80);
-}
-
-/* Ghost style (if you use it) */
-.btn.ghost {
-  background: transparent;
-  border: 1px solid rgba(255,255,255,0.20);
-}
-
-/* Small text */
+/* ===== Fine print ===== */
 .fineprint {
+  margin: 16px 0 0;
   font-size: 12px;
-  color: #aaa;
-  margin-top: 18px;
-  line-height: 1.4;
+  color: rgba(255,255,255,0.55);
+  line-height: 1.35;
+}
+
+/* ===== Animations ===== */
+@keyframes titleGlow {
+  0%   { text-shadow: 0 0 16px rgba(124,58,237,0.20); }
+  50%  { text-shadow: 0 0 28px rgba(124,58,237,0.55); }
+  100% { text-shadow: 0 0 16px rgba(124,58,237,0.20); }
+}
+
+@keyframes cardGlow {
+  0%   { box-shadow: 0 0 24px rgba(124,58,237,0.18), 0 18px 50px rgba(0,0,0,0.65); }
+  50%  { box-shadow: 0 0 38px rgba(124,58,237,0.32), 0 18px 50px rgba(0,0,0,0.65); }
+  100% { box-shadow: 0 0 24px rgba(124,58,237,0.18), 0 18px 50px rgba(0,0,0,0.65); }
+}
+
+/* ===== Mobile sizing tweaks ===== */
+@media (max-width: 380px) {
+  .hero h1 { font-size: 38px; letter-spacing: 5px; }
+  .tagline { font-size: 16px; }
+  .btn { font-size: 16px; padding: 15px 12px; }
 }
