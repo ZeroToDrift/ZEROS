@@ -1,46 +1,38 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>ZEROS™</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="style.css" />
 </head>
 <body>
+  <main class="container">
+    <header class="hero">
+      <h1 class="logo">ZEROS<sup class="tm">™</sup></h1>
+      <p class="tagline">Fast. Discreet. Licensed.</p>
+    </header>
 
-  <div class="container">
-    <h1>ZEROS<span class="tm">™</span></h1>
-    <p class="tagline">Fast. Discreet. Licensed.</p>
-
-    <div class="card">
+    <section class="card">
       <div class="label">TEXT ONLY</div>
 
-      <div class="number">
-        <a href="sms:15186946569">(518) 694-6569</a>
+      <!-- Clickable phone number -->
+      <a class="number" href="sms:+15186946569">
+        (518) 694-6569
+      </a>
+
+      <div class="stack">
+        <a class="btn primary" href="sms:+15186946569">Text to Order (Text Only)</a>
+        <button class="btn ghost" type="button" onclick="copyNumber()">Copy Number</button>
+        <a class="btn" href="https://instagram.com/zero2drift" target="_blank" rel="noopener">Instagram @Zero2Drift</a>
+        <a class="btn" href="zero.vcf" download>Save Contact</a>
       </div>
 
-      <a href="sms:15186946569" class="btn primary">
-        Text to Order (Text Only)
-      </a>
+      <p class="fineprint">By texting, you confirm you are of legal age in your area.</p>
+      <div id="toast" class="toast" aria-live="polite"></div>
+    </section>
+  </main>
 
-      <button class="btn ghost" onclick="copyNumber()">
-        Copy Number
-      </button>
-
-      <a href="https://instagram.com/zero2drift" class="btn">
-        Instagram @Zero2Drift
-      </a>
-
-      <a href="zero.vcf" class="btn">
-        Save Contact
-      </a>
-
-      <div class="fineprint">
-        By texting, you confirm you are of legal age in your area.
-      </div>
-    </div>
-  </div>
-
-<script src="script.js"></script>
+  <script src="script.js"></script>
 </body>
 </html>
