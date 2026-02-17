@@ -1,11 +1,11 @@
-function copyNumber() {
-  const number = document.getElementById("phone").innerText;
-  navigator.clipboard.writeText(number);
+ function copyNumber() {
+  const number = "(518) 694-6569";
 
-  const message = document.getElementById("copied");
-  message.innerText = "Number Copied ✅";
-
-  setTimeout(() => {
-    message.innerText = "";
-  }, 1500);
+  navigator.clipboard.writeText(number)
+    .then(() => {
+      alert("Number copied!");
+    })
+    .catch(() => {
+      alert("Copy failed.");
+    });
 }
