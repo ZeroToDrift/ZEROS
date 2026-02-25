@@ -130,25 +130,21 @@ document.addEventListener("DOMContentLoaded", () => {
   setLockedUI();
 
   // Password
-  let wrongAttempts = 0;
-
   function unlockAttempt(){
     const attempt = (passInput?.value || "").trim();
+
     if (!attempt) {
       gateMsg.textContent = "Enter the password.";
       return;
     }
 
     if (attempt === MEMBER_PASSWORD) {
-      wrongAttempts = 0;
       gateMsg.textContent = "";
       setUnlockedUI();
       return;
     }
 
-    wrongAttempts++;
-    setPressure(wrongAttempts >= 3 ? "MONITORED" : "ELEVATED");
-    gateMsg.textContent = (wrongAttempts >= 2) ? "WRONG PASSWORD." : "WRONG PASSWORD.";
+    gateMsg.textContent = "WRONG PASSWORD.";
     passInput.value = "";
     passInput.focus();
   }
@@ -166,7 +162,6 @@ document.addEventListener("DOMContentLoaded", () => {
       copyMsg.textContent = "Copied.";
       setTimeout(() => (copyMsg.textContent = ""), 1200);
     } catch {
-      // fallback
       const ta = document.createElement("textarea");
       ta.value = MEMBERS_NUMBER;
       document.body.appendChild(ta);
@@ -178,9 +173,9 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 
-  // POT LEAF RAIN (INLINE SVG — iPhone safe)
+  // POT LEAF RAIN (inline SVG; iPhone-safe)
   if (leafContainer) {
-    const count = 36;
+    const count = 38;
 
     const svgMarkup = `
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" class="leaf-svg">
@@ -195,17 +190,17 @@ document.addEventListener("DOMContentLoaded", () => {
       leaf.innerHTML = svgMarkup;
 
       leaf.style.left = (Math.random() * 100) + "vw";
-      leaf.style.top = (-Math.random() * 100) + "vh";
+      leaf.style.top = (-Math.random() * 120) + "vh";
 
-      const size = 14 + Math.random() * 20;
+      const size = 14 + Math.random() * 22;
       leaf.style.width = size + "px";
       leaf.style.height = size + "px";
 
       leaf.style.opacity = (0.10 + Math.random() * 0.18).toFixed(2);
-      leaf.style.animationDuration = (14 + Math.random() * 16) + "s";
+      leaf.style.animationDuration = (12 + Math.random() * 18) + "s";
       leaf.style.animationDelay = (Math.random() * 6) + "s";
 
-      leaf.style.setProperty("--drift", (Math.random() * 140 - 70).toFixed(0) + "px");
+      leaf.style.setProperty("--drift", (Math.random() * 160 - 80).toFixed(0) + "px");
       leaf.style.setProperty("--spin", (Math.random() * 720 - 360).toFixed(0) + "deg");
 
       leafContainer.appendChild(leaf);
