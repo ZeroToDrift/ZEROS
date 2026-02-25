@@ -237,4 +237,33 @@ body{
 @keyframes flicker{
   from { opacity: 0.85; }
   to   { opacity: 1; }
+}/* ===== STRATEGIC MODE ===== */
+
+.pressure{
+  margin-top:10px;
+  font-size:13px;
+  letter-spacing:2px;
+  opacity:0.8;
+}
+
+.cult{
+  margin-top:6px;
+  font-size:12px;
+  opacity:0.65;
+  transition:opacity .3s ease;
+}
+
+/* After dark theme */
+.after-dark .site-bg{
+  filter:brightness(0.75) saturate(1.1);
+}
+
+.after-dark .logo{
+  text-shadow:
+    0 0 10px #ff3c6f,
+    0 0 25px #ff3c6f;
+}
+
+.after-dark .pressure{
+  color:#ff3c6f;
 }
