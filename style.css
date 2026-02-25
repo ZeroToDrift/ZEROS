@@ -1,112 +1,332 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <title>ZEROS™</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+/* ===== ZEROS | NEON BOOSTED + STEALTH MEMBERS ===== */
 
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;600;700&display=swap" rel="stylesheet">
+:root{
+  --bg: #050607;
+  --panel: rgba(6, 8, 10, 0.68);
+  --text: rgba(255,255,255,0.95);
+  --muted: rgba(255,255,255,0.75);
 
-  <link rel="stylesheet" href="style.css" />
-</head>
+  --neon: #3cff84;
+  --neonStrong: #2bff76;
+  --purple: #b06bff;
 
-<body>
-  <div class="site-bg">
-    <main class="container">
+  --shadowDeep: 0 20px 60px rgba(0,0,0,0.65);
+  --shadowSoft: 0 12px 30px rgba(0,0,0,0.35);
+}
 
-      <!-- ===== PUBLIC ===== -->
-      <section id="public">
-        <header class="hero">
-          <div class="kicker">PRESSURE SEASON</div>
+*{ box-sizing: border-box; }
+html, body{ height: 100%; }
 
-          <!-- Secret trigger: 5 taps reveals members -->
-          <h1 class="logo" id="logoTrigger" aria-label="ZEROS">
-            ZEROS<span class="tm">™</span>
-          </h1>
+body{
+  margin: 0;
+  font-family: "Space Grotesk", system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+  color: var(--text);
+  background: var(--bg);
+}
 
-          <p class="tagline">Fast. Discreet. Licensed.</p>
-          <p class="helper subtle" id="secretHint" aria-live="polite"></p>
-        </header>
+/* ===== Background ===== */
+.site-bg{
+  min-height: 100vh;
 
-        <section class="card">
-          <a class="btn primary" href="https://t.me/+PNco3ZIElZBjODBh" target="_blank" rel="noopener">
-            View Full Menu on Telegram
-          </a>
+  background-image:
+    linear-gradient(180deg, rgba(0,0,0,0.78), rgba(0,0,0,0.68)),
+    radial-gradient(circle at 50% 30%, rgba(60,255,132,0.35), transparent 60%),
+    radial-gradient(circle at 50% 70%, rgba(176,107,255,0.18), transparent 70%),
+    url("1919B37D-65D2-4E03-9227-57B6B96BCD69.png");
 
-          <div class="helper">
-            For menu + ordering, use Telegram.
-          </div>
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
 
-          <a class="btn" href="https://instagram.com/zero2drift" target="_blank" rel="noopener">
-            Business / Inquiries → Instagram DM @zero2drift
-          </a>
+  display: flex;
+  align-items: center;
+  justify-content: center;
 
-          <p class="fineprint">
-            By messaging, you confirm you are of legal age in your area.
-          </p>
-        </section>
+  padding: 56px 16px;
+  text-align: center;
+  position: relative;
 
-        <footer class="footer">
-          <span class="dot"></span>
-          <span class="footer-strong">ZEROS™</span>
-          <span class="sep">•</span>
-          <span class="muted">No weird shit. Just quality.</span>
-        </footer>
-      </section>
+  /* make it more neon */
+  filter: brightness(1.15) saturate(1.2);
+}
 
-      <!-- ===== MEMBERS (HIDDEN UNTIL SECRET) ===== -->
-      <section id="members" class="members-wrap hidden">
-        <header class="hero">
-          <div class="kicker">MEMBERS ONLY</div>
-          <h2 class="members-title">Private Access</h2>
-          <p class="tagline">Enter the password to unlock the members line.</p>
-        </header>
+/* vignette */
+.site-bg::before{
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: radial-gradient(circle at center, transparent 35%, rgba(0,0,0,0.55) 100%);
+  z-index: 0;
+}
 
-        <section class="card">
+.container{
+  width: 100%;
+  max-width: 480px;
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
+  position: relative;
+  z-index: 1;
+}
 
-          <!-- Password Gate -->
-          <div id="gate" class="gate">
-            <label class="label" for="memberPass">Password</label>
+/* ===== Hero ===== */
+.hero{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
 
-            <div class="row">
-              <input id="memberPass" class="input" type="password" placeholder="Enter password" autocomplete="off" />
-              <button id="unlockBtn" class="btn small primary" type="button">Unlock</button>
-            </div>
+.kicker{
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
 
-            <p id="gateMsg" class="helper" style="margin: 10px 0 0;"></p>
-            <p class="fineprint" style="margin-top: 12px;">
-              Tip: unlocked for this session.
-            </p>
-          </div>
+  font-size: 12px;
+  letter-spacing: 3px;
+  text-transform: uppercase;
 
-          <!-- Hidden Content -->
-          <div id="memberContent" class="member-content hidden">
-            <div class="member-box">
-              <div class="member-label">Members Line</div>
+  padding: 8px 18px;
+  border-radius: 999px;
 
-              <div id="burnerNumber" class="member-number">••• ••• ••••</div>
+  border: 1px solid rgba(60,255,132,0.45);
+  background: rgba(0,0,0,0.35);
 
-              <div class="row" style="margin-top: 14px;">
-                <button id="copyBtn" class="btn primary" type="button" disabled>Copy Number</button>
-                <a id="smsLink" class="btn disabled" href="#" aria-disabled="true">Text</a>
-              </div>
+  box-shadow: 0 0 20px rgba(60,255,132,0.35);
+  margin-bottom: 16px;
+}
 
-              <p id="copyMsg" class="helper" style="margin: 12px 0 0;"></p>
+.logo{
+  margin: 0;
+  font-size: 52px;
+  letter-spacing: 8px;
+  font-weight: 800;
+  cursor: default;
+  user-select: none;
 
-              <p class="fineprint" style="margin-top:12px;">
-                Keep this private. If it leaks, it gets rotated.
-              </p>
-            </div>
-          </div>
+  text-shadow:
+    0 0 10px var(--neonStrong),
+    0 0 25px var(--neon),
+    0 0 45px rgba(60,255,132,0.65),
+    0 0 80px rgba(176,107,255,0.35);
 
-        </section>
-      </section>
+  animation: pulseLogo 3s ease-in-out infinite;
+}
 
-    </main>
-  </div>
+.tm{
+  font-size: 16px;
+  vertical-align: super;
+  margin-left: 4px;
+}
 
-  <script src="script.js"></script>
-</body>
-</html>
+.tagline{
+  margin-top: 12px;
+  font-size: 18px;
+  color: var(--muted);
+}
+
+.helper{
+  font-size: 14px;
+  color: rgba(255,255,255,0.72);
+}
+
+.helper.subtle{
+  min-height: 18px;
+  margin: 8px 0 0;
+  opacity: 0.75;
+}
+
+/* ===== Card ===== */
+.card{
+  padding: 24px;
+  border-radius: 20px;
+
+  background: var(--panel);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+
+  border: 1px solid rgba(60,255,132,0.28);
+
+  box-shadow:
+    0 0 35px rgba(60,255,132,0.18),
+    0 0 80px rgba(176,107,255,0.10),
+    var(--shadowDeep);
+}
+
+/* ===== Buttons ===== */
+.btn{
+  display: block;
+  width: 100%;
+  padding: 17px 16px;
+  border-radius: 18px;
+  margin: 14px 0;
+
+  text-decoration: none;
+  font-weight: 700;
+  font-size: 17px;
+
+  color: white;
+  background: rgba(255,255,255,0.08);
+  border: 1px solid rgba(255,255,255,0.18);
+
+  transition: all 0.15s ease;
+  box-shadow: var(--shadowSoft);
+}
+
+.btn:hover{
+  transform: translateY(-2px);
+  box-shadow: 0 0 20px rgba(60,255,132,0.25), var(--shadowSoft);
+}
+
+.btn:active{
+  transform: translateY(0px) scale(0.985);
+}
+
+.btn.primary{
+  background: linear-gradient(90deg, #1fd86f, #3cff84);
+  border: 1px solid rgba(60,255,132,0.65);
+
+  box-shadow:
+    0 15px 40px rgba(0,0,0,0.5),
+    0 0 35px rgba(60,255,132,0.35),
+    0 0 90px rgba(176,107,255,0.20);
+}
+
+.btn.primary:hover{
+  transform: translateY(-3px);
+  filter: brightness(1.08);
+}
+
+/* ===== Fine print ===== */
+.fineprint{
+  margin: 16px 0 0;
+  font-size: 12px;
+  color: rgba(255,255,255,0.55);
+  line-height: 1.35;
+}
+
+/* ===== Footer ===== */
+.footer{
+  margin-top: 22px;
+  padding-bottom: 16px;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+
+  font-size: 13px;
+  color: rgba(255,255,255,0.75);
+}
+
+.footer-strong{ opacity: 0.95; }
+.sep{ opacity: 0.55; }
+.muted{ opacity: 0.85; }
+
+.dot{
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: var(--neonStrong);
+  box-shadow: 0 0 15px var(--neonStrong);
+}
+
+/* ===== Members styling ===== */
+.members-wrap{
+  margin-top: 26px;
+}
+
+.members-title{
+  margin: 0;
+  font-size: 34px;
+  font-weight: 800;
+  letter-spacing: 0.5px;
+}
+
+.hidden{ display: none !important; }
+
+.disabled{
+  pointer-events: none;
+  opacity: 0.55;
+}
+
+.gate{ text-align: left; }
+
+.label{
+  display: block;
+  text-align: center;
+  font-size: 14px;
+  font-weight: 700;
+  color: rgba(255,255,255,0.85);
+  margin-bottom: 10px;
+}
+
+.row{
+  display: flex;
+  gap: 12px;
+  align-items: center;
+}
+
+.input{
+  flex: 1;
+  padding: 14px 14px;
+  border-radius: 14px;
+  border: 1px solid rgba(255,255,255,0.18);
+  background: rgba(255,255,255,0.08);
+  color: rgba(255,255,255,0.95);
+  font-size: 16px;
+  outline: none;
+}
+
+.input:focus{
+  border-color: rgba(60,255,132,0.70);
+  box-shadow: 0 0 0 3px rgba(60,255,132,0.18);
+}
+
+.btn.small{
+  width: auto;
+  padding: 14px 16px;
+  border-radius: 14px;
+  margin: 0;
+  white-space: nowrap;
+}
+
+.member-label{
+  text-align: center;
+  font-size: 16px;
+  font-weight: 700;
+  color: rgba(255,255,255,0.88);
+  margin-bottom: 10px;
+}
+
+.member-number{
+  text-align: center;
+  font-size: 22px;
+  letter-spacing: 2px;
+  font-weight: 900;
+  padding: 14px 14px;
+  border-radius: 14px;
+  border: 1px solid rgba(60,255,132,0.30);
+  background: rgba(0,0,0,0.22);
+  box-shadow: 0 0 20px rgba(60,255,132,0.10);
+}
+
+/* ===== Animations ===== */
+@keyframes pulseLogo{
+  0%   { text-shadow: 0 0 10px var(--neonStrong), 0 0 25px var(--neon), 0 0 45px rgba(60,255,132,0.6), 0 0 80px rgba(176,107,255,0.3); }
+  50%  { text-shadow: 0 0 14px var(--neonStrong), 0 0 35px var(--neon), 0 0 70px rgba(60,255,132,0.8), 0 0 120px rgba(176,107,255,0.45); }
+  100% { text-shadow: 0 0 10px var(--neonStrong), 0 0 25px var(--neon), 0 0 45px rgba(60,255,132,0.6), 0 0 80px rgba(176,107,255,0.3); }
+}
+
+/* Mobile */
+@media (max-width: 420px){
+  .logo{ font-size: 46px; letter-spacing: 6px; }
+  .tagline{ font-size: 16px; }
+}
+
+/* iOS fix */
+@supports (-webkit-touch-callout: none){
+  .site-bg{ background-attachment: scroll; }
+}
