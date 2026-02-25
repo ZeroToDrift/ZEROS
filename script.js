@@ -15,80 +15,125 @@ document.addEventListener("DOMContentLoaded", () => {
   const copyMsg = document.getElementById("copyMsg");
   const smsLink = document.getElementById("smsLink");
 
-  function showToast(msg){
+  // Visible debug so you KNOW JS is running
+  function setMsg(msg) {
+    if (gateMsg) gateMsg.textContent = msg;
+  }
+
+  function showToast(msg) {
     if (!toast) return;
     toast.textContent = msg;
     toast.classList.remove("hidden");
     setTimeout(() => toast.classList.add("hidden"), 1400);
   }
 
-  // ----- Secret tap logic (5 taps within 3s) -----
+  // If core elements are missing, tell you exactly what
+  const missing = [];
+  if (!membersSection) missing.push("#members");
+  if (!passInput) missing.push("#memberPass");
+  if (!unlockBtn) missing.push("#unlockBtn");
+  if (!gateMsg) missing.push("#gateMsg");
+  if (!numberEl) missing.push("#burnerNumber");
+  if (!copyBtn) missing.push("#copyBtn");
+  if (!smsLink) missing.push("#smsLink");
+
+  if (missing.length) {
+    alert("JS loaded, but HTML is missing: " + missing.join(", "));
+    return;
+  }
+
+  // Confirm JS is loaded (you'll see this under the password box)
+  setMsg("JS LOADED ✅");
+
+  // ----- Secret reveal (5 taps) -----
   let taps = 0;
   let timer = null;
 
-  function registerTap(){
+  function revealMembers() {
+    membersSection.classList.remove("hidden");
+    showToast("Members unlocked");
+    setTimeout(() => membersSection.scrollIntoView({ behavior: "smooth" }), 150);
+    setTimeout(() => passInput.focus(), 400);
+  }
+
+  function registerTap() {
     taps++;
     clearTimeout(timer);
     timer = setTimeout(() => (taps = 0), 3000);
-
     if (taps >= 5) {
       taps = 0;
-      membersSection.classList.remove("hidden");
-      showToast("Members unlocked");
-      setTimeout(() => membersSection.scrollIntoView({ behavior: "smooth" }), 150);
-      setTimeout(() => passInput?.focus(), 400);
+      revealMembers();
     }
   }
 
-  logoTrigger?.addEventListener("pointerup", (e) => {
-    e.preventDefault();
-    registerTap();
-  });
+  if (logoTrigger) {
+    logoTrigger.addEventListener("pointerup", (e) => {
+      e.preventDefault();
+      registerTap();
+    });
 
-  // Fallback touch
-  logoTrigger?.addEventListener("touchend", (e) => {
-    e.preventDefault();
-    registerTap();
-  }, { passive: false });
+    logoTrigger.addEventListener(
+      "touchend",
+      (e) => {
+        e.preventDefault();
+        registerTap();
+      },
+      { passive: false }
+    );
+  }
 
-  // ----- Password unlock -----
-  function normalize(str){
+  // ----- Unlock logic -----
+  function normalize(str) {
     return (str || "").normalize("NFKC").trim();
   }
 
-  function unlock(){
-    const attempt = normalize(passInput?.value);
+  function lockUI() {
+    copyBtn.disabled = true;
+    smsLink.classList.add("disabled");
+    smsLink.setAttribute("aria-disabled", "true");
+    smsLink.href = "#";
+    numberEl.textContent = "••• ••• ••••";
+    copyMsg.textContent = "";
+  }
+
+  function unlockUI() {
+    numberEl.textContent = MEMBERS_NUMBER;
+
+    copyBtn.disabled = false;
+
+    smsLink.classList.remove("disabled");
+    smsLink.removeAttribute("aria-disabled");
+    smsLink.href = `sms:${encodeURIComponent(MEMBERS_NUMBER)}`;
+
+    showToast("Access granted");
+  }
+
+  lockUI();
+
+  function unlock() {
+    const attempt = normalize(passInput.value);
 
     if (!attempt) {
-      gateMsg.textContent = "Enter the password.";
+      setMsg("Enter the password.");
       return;
     }
 
     if (attempt === MEMBER_PASSWORD) {
-      gateMsg.textContent = "";
-      numberEl.textContent = MEMBERS_NUMBER;
-
-      copyBtn.disabled = false;
-
-      smsLink.classList.remove("disabled");
-      smsLink.removeAttribute("aria-disabled");
-      smsLink.href = `sms:${encodeURIComponent(MEMBERS_NUMBER)}`;
-
-      showToast("Access granted");
+      setMsg("");
+      unlockUI();
     } else {
-      gateMsg.textContent = "WRONG PASSWORD.";
+      setMsg("WRONG PASSWORD.");
       passInput.value = "";
       passInput.focus();
     }
   }
 
-  unlockBtn?.addEventListener("click", unlock);
-  passInput?.addEventListener("keydown", (e) => {
+  unlockBtn.addEventListener("click", unlock);
+  passInput.addEventListener("keydown", (e) => {
     if (e.key === "Enter") unlock();
   });
 
-  // Copy (only works after unlock)
-  copyBtn?.addEventListener("click", async () => {
+  copyBtn.addEventListener("click", async () => {
     if (copyBtn.disabled) {
       copyMsg.textContent = "Locked.";
       setTimeout(() => (copyMsg.textContent = ""), 1200);
