@@ -25,18 +25,21 @@ body{
 
 .leaf{
   position:absolute;
-  top:-20vh;
-  width:22px;
-  height:22px;
+  top:-30vh;
+  width:18px;
+  height:18px;
   opacity:0.12;
+  background-size:contain;
+  background-repeat:no-repeat;
+  background-position:center;
   filter: drop-shadow(0 0 10px rgba(60,255,132,0.10));
   animation: fall linear infinite;
   will-change: transform;
 }
 
 @keyframes fall{
-  0%   { transform: translate3d(0,-20vh,0) rotate(0deg); }
-  100% { transform: translate3d(60px,120vh,0) rotate(360deg); }
+  0%   { transform: translate3d(0,-30vh,0) rotate(0deg); }
+  100% { transform: translate3d(var(--drift, 40px),120vh,0) rotate(var(--spin, 360deg)); }
 }
 
 /* ===== Background ===== */
@@ -107,6 +110,7 @@ body{
     0 0 55px rgba(60,255,132,0.45);
   -webkit-tap-highlight-color: transparent;
 }
+
 .no-zoom{
   user-select:none;
   -webkit-user-select:none;
@@ -228,7 +232,7 @@ body{
   text-shadow: 0 0 10px #ff3c6f, 0 0 25px #ff3c6f, 0 0 55px rgba(255,60,111,0.35);
 }
 .after-dark .pressure{ color:#ff3c6f; }
-.after-dark .leaf{ opacity:0.07; filter: drop-shadow(0 0 12px rgba(255,60,111,0.14)); }
+.after-dark .leaf{ opacity:0.08; filter: drop-shadow(0 0 12px rgba(255,60,111,0.14)); }
 
 /* Glitch overlay */
 .glitch-overlay{
