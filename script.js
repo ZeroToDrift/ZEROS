@@ -1,6 +1,6 @@
 document.addEventListener("DOMContentLoaded", () => {
   const MEMBER_PASSWORD = "BigJigglyBalls";
-  const MEMBERS_NUMBER = "(646) 332-9902";
+  const MEMBERS_NUMBER = "(646) 444-4277";
 
   const logoTrigger = document.getElementById("logoTrigger");
   const membersSection = document.getElementById("members");
