@@ -31,13 +31,16 @@ document.addEventListener("DOMContentLoaded", () => {
     if (!toast) return;
     toast.textContent = msg;
     toast.classList.remove("hidden");
-    setTimeout(() => toast.classList.add("hidden"), 1600);
+    setTimeout(() => toast.classList.add("hidden"), 1400);
   }
 
   function setPressure(state){
     if (!pressureEl) return;
     pressureEl.textContent = `PRESSURE LEVEL: ${state}`;
   }
+
+  // ✅ PROOF JS IS RUNNING
+  showToast("JS ONLINE");
 
   // Cult phrases
   const cultPhrases = [
@@ -49,6 +52,7 @@ document.addEventListener("DOMContentLoaded", () => {
     "Say less.",
     "You weren’t invited."
   ];
+
   function rotateCult(){
     if (!cultEl) return;
     cultEl.textContent = cultPhrases[Math.floor(Math.random() * cultPhrases.length)];
@@ -63,12 +67,6 @@ document.addEventListener("DOMContentLoaded", () => {
     if (taglineEl) taglineEl.textContent = "After Hours Protocol Active.";
   }
 
-  // Rare silent flicker (2%)
-  if (Math.random() < 0.02) {
-    document.body.style.opacity = "0.92";
-    setTimeout(() => (document.body.style.opacity = "1"), 120);
-  }
-
   // Pressure baseline + scroll reaction
   setPressure("STABLE");
   let scrollTimer = null;
@@ -78,15 +76,13 @@ document.addEventListener("DOMContentLoaded", () => {
     scrollTimer = setTimeout(() => setPressure("STABLE"), 900);
   }, { passive: true });
 
-  // Members reveal (5 taps within 3s)
-  const REVEAL_KEY = "zeros_members_revealed";
+  // ✅ Members reveal (5 taps in 3 sec)
   let taps = 0;
   let tapTimer = null;
 
   function revealMembers(){
     if (!membersSection) return;
     membersSection.classList.remove("hidden");
-    sessionStorage.setItem(REVEAL_KEY, "1");
     showToast("Members unlocked.");
     setPressure("ELEVATED");
     setTimeout(() => membersSection.scrollIntoView({ behavior: "smooth", block: "start" }), 150);
@@ -103,12 +99,10 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
 
-  if (sessionStorage.getItem(REVEAL_KEY) === "1") {
-    membersSection?.classList.remove("hidden");
-  }
-
+  // iOS: bind multiple events (some browsers ignore pointer)
   if (logoTrigger) {
     logoTrigger.addEventListener("pointerup", (e) => { e.preventDefault(); registerTap(); });
+    logoTrigger.addEventListener("click", (e) => { e.preventDefault(); registerTap(); });
     logoTrigger.addEventListener("touchend", (e) => { e.preventDefault(); registerTap(); }, { passive:false });
   }
 
@@ -170,25 +164,13 @@ document.addEventListener("DOMContentLoaded", () => {
     overlay.appendChild(text);
     document.body.appendChild(overlay);
 
-    let shakeCount = 0;
-    const shakeInterval = setInterval(() => {
-      const x = (Math.random() - 0.5) * 20;
-      const y = (Math.random() - 0.5) * 20;
-      document.body.style.transform = `translate(${x}px, ${y}px)`;
-      shakeCount++;
-      if (shakeCount > 10) {
-        clearInterval(shakeInterval);
-        document.body.style.transform = "translate(0,0)";
-      }
-    }, 40);
-
     setTimeout(() => {
       overlay.remove();
       document.body.style.overflow = "";
       if (gateMsg) gateMsg.textContent = "";
       wrongAttempts = 0;
       setPressure("DENIED");
-    }, 1800);
+    }, 1500);
   }
 
   // Password logic
@@ -234,55 +216,46 @@ document.addEventListener("DOMContentLoaded", () => {
   // Copy guarded
   copyBtn?.addEventListener("click", async () => {
     if (!copyBtn || copyBtn.disabled) return;
-
     try {
       await navigator.clipboard.writeText(MEMBERS_NUMBER);
       if (copyMsg) copyMsg.textContent = "Copied.";
       setTimeout(() => { if (copyMsg) copyMsg.textContent = ""; }, 1500);
-    } catch {
-      const ta = document.createElement("textarea");
-      ta.value = MEMBERS_NUMBER;
-      document.body.appendChild(ta);
-      ta.select();
-      document.execCommand("copy");
-      document.body.removeChild(ta);
-      if (copyMsg) copyMsg.textContent = "Copied.";
-      setTimeout(() => { if (copyMsg) copyMsg.textContent = ""; }, 1500);
-    }
+    } catch {}
   });
 
-  // ===== REAL POT-LEAF SVG RAIN =====
-  // Simple cannabis-leaf silhouette as an inline SVG data URI.
-  // (Looks consistent everywhere, unlike emoji.)
-  const leafSVG = encodeURIComponent(`
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  // ===== POT LEAF RAIN (SVG) =====
+  const leafSVG = encodeURIComponent(
+    `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
       <path fill="#3cff84" d="M32 4c2 8 3 16 2 24 4-6 10-11 18-14-5 10-10 18-18 24 6-1 13-1 22 2-9 6-17 9-24 8 5 5 9 12 10 22-9-5-15-11-18-18-3 7-9 13-18 18 1-10 5-17 10-22-7 1-15-2-24-8 9-3 16-3 22-2-8-6-13-14-18-24 8 3 14 8 18 14-1-8 0-16 2-24z"/>
       <path fill="#2bff76" d="M31 26c0 10-1 20-3 30h8c-2-10-3-20-3-30h-2z" opacity="0.9"/>
-    </svg>
-  `);
+    </svg>`
+  );
 
   const leafURL = `data:image/svg+xml,${leafSVG}`;
 
   if (leafContainer) {
-    const count = 38;
+    const count = 34;
 
     for (let i = 0; i < count; i++) {
       const leaf = document.createElement("div");
       leaf.className = "leaf";
-      leaf.style.backgroundImage = `url("${leafURL}")`;
-      leaf.style.backgroundSize = "contain";
-      leaf.style.backgroundRepeat = "no-repeat";
+      leaf.style.backgroundImage = `url(${leafURL})`;
 
       leaf.style.left = (Math.random() * 100) + "vw";
-      leaf.style.width = (14 + Math.random() * 18) + "px";
-      leaf.style.height = leaf.style.width;
-
-      leaf.style.opacity = (0.06 + Math.random() * 0.08).toFixed(2);
-      leaf.style.animationDuration = (16 + Math.random() * 16) + "s";
-      leaf.style.animationDelay = (Math.random() * 10) + "s";
-
-      // start some already in flight so it’s not “empty” at load
       leaf.style.top = (-Math.random() * 100) + "vh";
+
+      const size = 14 + Math.random() * 18;
+      leaf.style.width = size + "px";
+      leaf.style.height = size + "px";
+
+      leaf.style.opacity = (0.06 + Math.random() * 0.10).toFixed(2);
+      leaf.style.animationDuration = (14 + Math.random() * 16) + "s";
+      leaf.style.animationDelay = (Math.random() * 6) + "s";
+
+      const drift = (Math.random() * 120 - 60).toFixed(0) + "px";
+      const spin = (Math.random() * 720 - 360).toFixed(0) + "deg";
+      leaf.style.setProperty("--drift", drift);
+      leaf.style.setProperty("--spin", spin);
 
       leafContainer.appendChild(leaf);
     }
