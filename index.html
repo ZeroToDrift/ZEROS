@@ -9,17 +9,19 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;600;700&display=swap" rel="stylesheet">
 
-  <link rel="stylesheet" href="style.css?v=999" />
+  <link rel="stylesheet" href="style.css?v=2000" />
 </head>
 
 <body>
   <div class="site-bg">
-    <!-- Leaf rain MUST be inside site-bg so it renders above the background image -->
+    <!-- Leaves must be INSIDE site-bg so they appear above the background image -->
     <div class="leaf-rain" aria-hidden="true"></div>
 
     <main class="container">
+      <!-- Toast -->
       <div id="toast" class="toast hidden" aria-live="polite"></div>
 
+      <!-- PUBLIC -->
       <header class="hero">
         <div class="kicker">PRESSURE SEASON</div>
 
@@ -28,6 +30,7 @@
         </h1>
 
         <p class="tagline" id="taglineText">Fast. Discreet. Licensed.</p>
+
         <p class="pressure" id="pressureLevel">PRESSURE LEVEL: STABLE</p>
         <p class="cult" id="cultLine"></p>
       </header>
@@ -55,7 +58,7 @@
         <span class="muted">No weird shit. Just quality.</span>
       </footer>
 
-      <!-- MEMBERS (hidden until press+hold ZEROS) -->
+      <!-- MEMBERS (hidden until press & hold) -->
       <section id="members" class="members-wrap hidden">
         <header class="hero" style="margin-top:22px;">
           <div class="kicker">MEMBERS ONLY</div>
@@ -101,6 +104,6 @@
     </main>
   </div>
 
-  <script src="script.js?v=999"></script>
+  <script src="script.js?v=2000"></script>
 </body>
 </html>
