@@ -9,56 +9,59 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;600;700&display=swap" rel="stylesheet">
 
-  <link rel="stylesheet" href="style.css?v=2000" />
+  <link rel="stylesheet" href="style.css?v=3100" />
 </head>
 
 <body>
   <div class="site-bg">
-    <!-- Leaves must be INSIDE site-bg so they appear above the background image -->
+    <!-- Leaves above background, below content -->
     <div class="leaf-rain" aria-hidden="true"></div>
 
     <main class="container">
       <!-- Toast -->
       <div id="toast" class="toast hidden" aria-live="polite"></div>
 
-      <!-- PUBLIC -->
-      <header class="hero">
-        <div class="kicker">PRESSURE SEASON</div>
+      <!-- ===== PUBLIC ===== -->
+      <section id="public">
+        <header class="hero">
+          <div class="kicker">PRESSURE SEASON</div>
 
-        <h1 class="logo no-zoom" id="logoTrigger" role="button" tabindex="0">
-          ZEROS<span class="tm">™</span>
-        </h1>
+          <!-- Press & hold reveals Members -->
+          <h1 class="logo no-zoom" id="logoTrigger" role="button" tabindex="0">
+            ZEROS<span class="tm">™</span>
+          </h1>
 
-        <p class="tagline" id="taglineText">Fast. Discreet. Licensed.</p>
+          <p class="tagline" id="taglineText">Fast. Discreet. Licensed.</p>
 
-        <p class="pressure" id="pressureLevel">PRESSURE LEVEL: STABLE</p>
-        <p class="cult" id="cultLine"></p>
-      </header>
+          <p class="pressure" id="pressureLevel">PRESSURE LEVEL: STABLE</p>
+          <p class="cult" id="cultLine"></p>
+        </header>
 
-      <section class="card">
-        <a class="btn primary" href="https://t.me/+PNco3ZIElZBjODBh" target="_blank" rel="noopener">
-          View Full Menu on Telegram
-        </a>
+        <section class="card">
+          <a class="btn primary" href="https://t.me/+PNco3ZIElZBjODBh" target="_blank" rel="noopener">
+            View Full Menu on Telegram
+          </a>
 
-        <div class="helper">For menu + ordering, use Telegram.</div>
+          <div class="helper">For menu + ordering, use Telegram.</div>
 
-        <a class="btn" href="https://instagram.com/zero2drift" target="_blank" rel="noopener">
-          Business / Inquiries → Instagram DM @zero2drift
-        </a>
+          <a class="btn" href="https://instagram.com/zero2drift" target="_blank" rel="noopener">
+            Business / Inquiries → Instagram DM @zero2drift
+          </a>
 
-        <p class="fineprint">By messaging, you confirm you are of legal age in your area.</p>
+          <p class="fineprint">By messaging, you confirm you are of legal age in your area.</p>
+        </section>
+
+        <footer class="footer">
+          <span class="dot"></span>
+          <a class="footer-strong footer-link"
+             href="https://youtu.be/dQw4w9WgXcQ?si=k6fLU03Dcl_gIcvY"
+             target="_blank" rel="noopener">ZEROS™</a>
+          <span class="sep">•</span>
+          <span class="muted">No weird shit. Just quality.</span>
+        </footer>
       </section>
 
-      <footer class="footer">
-        <span class="dot"></span>
-        <a class="footer-strong footer-link"
-           href="https://youtu.be/dQw4w9WgXcQ?si=k6fLU03Dcl_gIcvY"
-           target="_blank" rel="noopener">ZEROS™</a>
-        <span class="sep">•</span>
-        <span class="muted">No weird shit. Just quality.</span>
-      </footer>
-
-      <!-- MEMBERS (hidden until press & hold) -->
+      <!-- ===== MEMBERS (Hidden until press & hold) ===== -->
       <section id="members" class="members-wrap hidden">
         <header class="hero" style="margin-top:22px;">
           <div class="kicker">MEMBERS ONLY</div>
@@ -104,6 +107,6 @@
     </main>
   </div>
 
-  <script src="script.js?v=2000"></script>
+  <script src="script.js?v=3100"></script>
 </body>
 </html>
