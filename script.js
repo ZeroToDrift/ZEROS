@@ -105,7 +105,7 @@ document.addEventListener("DOMContentLoaded", () => {
       gateMsg.textContent = "";
       setUnlockedUI();
     } else {
-      gateMsg.textContent = "WRONG PASSWORD.";
+      gateMsg.textContent = "YOU SUCK DUDE.";
       passInput.value = "";
       passInput.focus();
     }
