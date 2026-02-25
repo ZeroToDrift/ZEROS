@@ -1,10 +1,18 @@
-// ===== ZEROS Members Gate (no tabs) =====
+// ===== ZEROS Stealth Members + Password Gate =====
 
 const MEMBER_PASSWORD = "BigJigglyBalls";
-const BURNER_NUMBER = "(646) 332-9902";
-const SESSION_KEY = "zeros_members_ok";
+const MEMBERS_NUMBER = "(646) 332-9902";
+
+const SESSION_UNLOCK_KEY = "zeros_members_ok";
+const SESSION_REVEAL_KEY = "zeros_members_revealed";
 
 function $(id){ return document.getElementById(id); }
+
+// Elements
+const logoTrigger = $("logoTrigger");
+const secretHint = $("secretHint");
+
+const membersSection = $("members");
 
 const gate = $("gate");
 const memberContent = $("memberContent");
@@ -17,26 +25,92 @@ const copyBtn = $("copyBtn");
 const copyMsg = $("copyMsg");
 const smsLink = $("smsLink");
 
-function reveal(){
+// ---------- Stealth reveal (5 taps) ----------
+let tapCount = 0;
+let tapTimer = null;
+const TAP_WINDOW_MS = 3000;
+const TAP_TARGET = 5;
+
+function revealMembersSection(){
+  if (!membersSection) return;
+
+  membersSection.classList.remove("hidden");
+  sessionStorage.setItem(SESSION_REVEAL_KEY, "1");
+
+  // Scroll it into view smoothly
+  membersSection.scrollIntoView({ behavior: "smooth", block: "start" });
+
+  if (secretHint) {
+    secretHint.textContent = "";
+  }
+}
+
+function handleSecretTap(){
+  tapCount += 1;
+
+  // Start/reset timer window
+  if (tapTimer) clearTimeout(tapTimer);
+  tapTimer = setTimeout(() => {
+    tapCount = 0;
+    if (secretHint) secretHint.textContent = "";
+  }, TAP_WINDOW_MS);
+
+  // Optional tiny feedback (subtle)
+  if (secretHint) {
+    const left = Math.max(0, TAP_TARGET - tapCount);
+    secretHint.textContent = left ? "" : "";
+  }
+
+  if (tapCount >= TAP_TARGET) {
+    tapCount = 0;
+    clearTimeout(tapTimer);
+    tapTimer = null;
+    revealMembersSection();
+  }
+}
+
+logoTrigger?.addEventListener("click", handleSecretTap);
+logoTrigger?.addEventListener("touchend", (e) => {
+  // Prevent double firing on some mobile browsers
+  e.preventDefault();
+  handleSecretTap();
+}, { passive: false });
+
+// If previously revealed this session, keep it revealed
+if (sessionStorage.getItem(SESSION_REVEAL_KEY) === "1") {
+  membersSection?.classList.remove("hidden");
+}
+
+// ---------- Gate logic ----------
+function setLockedUI(isLocked){
+  if (copyBtn) copyBtn.disabled = isLocked;
+
+  if (smsLink) {
+    if (isLocked) {
+      smsLink.classList.add("disabled");
+      smsLink.setAttribute("aria-disabled", "true");
+      smsLink.href = "#";
+    } else {
+      smsLink.classList.remove("disabled");
+      smsLink.removeAttribute("aria-disabled");
+      smsLink.href = `sms:${encodeURIComponent(MEMBERS_NUMBER)}`;
+    }
+  }
+}
+
+function revealNumber(){
   if (!gate || !memberContent || !numberEl) return;
 
-  numberEl.textContent = BURNER_NUMBER;
-  smsLink.href = `sms:${encodeURIComponent(BURNER_NUMBER)}`;
+  numberEl.textContent = MEMBERS_NUMBER;
 
   gate.classList.add("hidden");
   memberContent.classList.remove("hidden");
-}
 
-function lock(){
-  sessionStorage.removeItem(SESSION_KEY);
-  gate.classList.remove("hidden");
-  memberContent.classList.add("hidden");
-  numberEl.textContent = "••• ••• ••••";
-  copyMsg.textContent = "";
+  setLockedUI(false);
 }
 
 function tryUnlock(){
-  const attempt = (passInput.value || "").trim();
+  const attempt = (passInput?.value || "").trim();
 
   if (!attempt) {
     gateMsg.textContent = "Enter the password.";
@@ -44,13 +118,15 @@ function tryUnlock(){
   }
 
   if (attempt === MEMBER_PASSWORD) {
-    sessionStorage.setItem(SESSION_KEY, "1");
+    sessionStorage.setItem(SESSION_UNLOCK_KEY, "1");
     gateMsg.textContent = "";
-    reveal();
+    revealNumber();
   } else {
     gateMsg.textContent = "Try Again Nigga.";
-    passInput.value = "";
-    passInput.focus();
+    if (passInput) {
+      passInput.value = "";
+      passInput.focus();
+    }
   }
 }
 
@@ -59,14 +135,22 @@ passInput?.addEventListener("keydown", (e) => {
   if (e.key === "Enter") tryUnlock();
 });
 
+// Copy is guarded (no bypass)
 copyBtn?.addEventListener("click", async () => {
+  const unlocked = sessionStorage.getItem(SESSION_UNLOCK_KEY) === "1";
+  if (!unlocked) {
+    copyMsg.textContent = "Locked. Enter password first.";
+    setTimeout(() => (copyMsg.textContent = ""), 1500);
+    return;
+  }
+
   try {
-    await navigator.clipboard.writeText(BURNER_NUMBER);
+    await navigator.clipboard.writeText(MEMBERS_NUMBER);
     copyMsg.textContent = "Copied.";
     setTimeout(() => (copyMsg.textContent = ""), 1500);
   } catch {
     const ta = document.createElement("textarea");
-    ta.value = BURNER_NUMBER;
+    ta.value = MEMBERS_NUMBER;
     document.body.appendChild(ta);
     ta.select();
     document.execCommand("copy");
@@ -76,7 +160,9 @@ copyBtn?.addEventListener("click", async () => {
   }
 });
 
-// Auto-reveal if already unlocked this session
-if (sessionStorage.getItem(SESSION_KEY) === "1") {
-  reveal();
+// Auto-unlock if already unlocked this session
+if (sessionStorage.getItem(SESSION_UNLOCK_KEY) === "1") {
+  revealNumber();
+} else {
+  setLockedUI(true);
 }
