@@ -6,6 +6,9 @@ document.addEventListener("DOMContentLoaded", () => {
   const membersSection = document.getElementById("members");
   const toast = document.getElementById("toast");
 
+  const gate = document.getElementById("gate");
+  const memberContent = document.getElementById("memberContent");
+
   const passInput = document.getElementById("memberPass");
   const unlockBtn = document.getElementById("unlockBtn");
   const gateMsg = document.getElementById("gateMsg");
@@ -15,48 +18,30 @@ document.addEventListener("DOMContentLoaded", () => {
   const copyMsg = document.getElementById("copyMsg");
   const smsLink = document.getElementById("smsLink");
 
-  // Visible debug so you KNOW JS is running
-  function setMsg(msg) {
-    if (gateMsg) gateMsg.textContent = msg;
-  }
-
-  function showToast(msg) {
+  function showToast(msg){
     if (!toast) return;
     toast.textContent = msg;
     toast.classList.remove("hidden");
     setTimeout(() => toast.classList.add("hidden"), 1400);
   }
 
-  // If core elements are missing, tell you exactly what
-  const missing = [];
-  if (!membersSection) missing.push("#members");
-  if (!passInput) missing.push("#memberPass");
-  if (!unlockBtn) missing.push("#unlockBtn");
-  if (!gateMsg) missing.push("#gateMsg");
-  if (!numberEl) missing.push("#burnerNumber");
-  if (!copyBtn) missing.push("#copyBtn");
-  if (!smsLink) missing.push("#smsLink");
-
-  if (missing.length) {
-    alert("JS loaded, but HTML is missing: " + missing.join(", "));
-    return;
+  function normalize(str){
+    return (str || "").normalize("NFKC").trim();
   }
 
-  // Confirm JS is loaded (you'll see this under the password box)
-  setMsg("JS LOADED ✅");
-
-  // ----- Secret reveal (5 taps) -----
+  // ---- Stealth reveal (5 taps in 3s) ----
   let taps = 0;
   let timer = null;
 
-  function revealMembers() {
+  function revealMembers(){
+    if (!membersSection) return;
     membersSection.classList.remove("hidden");
     showToast("Members unlocked");
     setTimeout(() => membersSection.scrollIntoView({ behavior: "smooth" }), 150);
-    setTimeout(() => passInput.focus(), 400);
+    setTimeout(() => passInput?.focus(), 400);
   }
 
-  function registerTap() {
+  function registerTap(){
     taps++;
     clearTimeout(timer);
     timer = setTimeout(() => (taps = 0), 3000);
@@ -66,74 +51,76 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
 
-  if (logoTrigger) {
-    logoTrigger.addEventListener("pointerup", (e) => {
-      e.preventDefault();
-      registerTap();
-    });
+  logoTrigger?.addEventListener("pointerup", (e) => {
+    e.preventDefault();
+    registerTap();
+  });
 
-    logoTrigger.addEventListener(
-      "touchend",
-      (e) => {
-        e.preventDefault();
-        registerTap();
-      },
-      { passive: false }
-    );
+  logoTrigger?.addEventListener("touchend", (e) => {
+    e.preventDefault();
+    registerTap();
+  }, { passive: false });
+
+  // ---- Locked state at load ----
+  function setLockedUI(){
+    if (numberEl) numberEl.textContent = "••• ••• ••••";
+    if (copyBtn) copyBtn.disabled = true;
+    if (smsLink) {
+      smsLink.classList.add("disabled");
+      smsLink.setAttribute("aria-disabled", "true");
+      smsLink.href = "#";
+    }
+    if (copyMsg) copyMsg.textContent = "";
   }
 
-  // ----- Unlock logic -----
-  function normalize(str) {
-    return (str || "").normalize("NFKC").trim();
-  }
+  // ---- Unlock UI (THIS is what you were missing) ----
+  function setUnlockedUI(){
+    // Show member content and hide gate
+    gate?.classList.add("hidden");
+    memberContent?.classList.remove("hidden");
 
-  function lockUI() {
-    copyBtn.disabled = true;
-    smsLink.classList.add("disabled");
-    smsLink.setAttribute("aria-disabled", "true");
-    smsLink.href = "#";
-    numberEl.textContent = "••• ••• ••••";
-    copyMsg.textContent = "";
-  }
+    // Fill number + enable actions
+    if (numberEl) numberEl.textContent = MEMBERS_NUMBER;
 
-  function unlockUI() {
-    numberEl.textContent = MEMBERS_NUMBER;
+    if (copyBtn) copyBtn.disabled = false;
 
-    copyBtn.disabled = false;
-
-    smsLink.classList.remove("disabled");
-    smsLink.removeAttribute("aria-disabled");
-    smsLink.href = `sms:${encodeURIComponent(MEMBERS_NUMBER)}`;
+    if (smsLink) {
+      smsLink.classList.remove("disabled");
+      smsLink.removeAttribute("aria-disabled");
+      smsLink.href = `sms:${encodeURIComponent(MEMBERS_NUMBER)}`;
+    }
 
     showToast("Access granted");
   }
 
-  lockUI();
+  setLockedUI();
 
-  function unlock() {
-    const attempt = normalize(passInput.value);
+  // ---- Password handler ----
+  function unlock(){
+    const attempt = normalize(passInput?.value);
 
     if (!attempt) {
-      setMsg("Enter the password.");
+      gateMsg.textContent = "Enter the password.";
       return;
     }
 
     if (attempt === MEMBER_PASSWORD) {
-      setMsg("");
-      unlockUI();
+      gateMsg.textContent = "";
+      setUnlockedUI();
     } else {
-      setMsg("WRONG PASSWORD.");
+      gateMsg.textContent = "YOU SUCK DUDE.";
       passInput.value = "";
       passInput.focus();
     }
   }
 
-  unlockBtn.addEventListener("click", unlock);
-  passInput.addEventListener("keydown", (e) => {
+  unlockBtn?.addEventListener("click", unlock);
+  passInput?.addEventListener("keydown", (e) => {
     if (e.key === "Enter") unlock();
   });
 
-  copyBtn.addEventListener("click", async () => {
+  // ---- Copy (only works after unlock) ----
+  copyBtn?.addEventListener("click", async () => {
     if (copyBtn.disabled) {
       copyMsg.textContent = "Locked.";
       setTimeout(() => (copyMsg.textContent = ""), 1200);
