@@ -1,11 +1,10 @@
-<!DOCTYPE html>
+<<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
   <title>ZEROS™</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-  <!-- Font: bold + clean for neon branding -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;600;700&display=swap" rel="stylesheet">
@@ -14,43 +13,100 @@
 </head>
 
 <body>
-  <!-- Full-page background layer -->
   <div class="site-bg">
     <main class="container">
-      <header class="hero">
-        <div class="kicker">PRESSURE SEASON</div>
 
-        <h1 class="logo">
-          ZEROS<span class="tm">™</span>
-        </h1>
+      <!-- ===== Tabs ===== -->
+      <nav class="tabs">
+        <button class="tab active" data-tab="public" type="button">Public</button>
+        <button class="tab" data-tab="members" type="button">Members</button>
+      </nav>
 
-        <p class="tagline">Fast. Discreet. Licensed.</p>
-      </header>
+      <!-- ===== PUBLIC TAB ===== -->
+      <section id="tab-public" class="tab-panel active">
 
-      <section class="card">
-        <a class="btn primary" href="https://t.me/+PNco3ZIElZBjODBh" target="_blank" rel="noopener">
-          View Full Menu on Telegram
-        </a>
+        <header class="hero">
+          <div class="kicker">PRESSURE SEASON</div>
+          <h1 class="logo">ZEROS<span class="tm">™</span></h1>
+          <p class="tagline">Fast. Discreet. Licensed.</p>
+        </header>
 
-        <div class="helper">
-          For menu + ordering, use Telegram.
-        </div>
+        <section class="card">
+          <a class="btn primary" href="https://t.me/+PNco3ZIElZBjODBh" target="_blank" rel="noopener">
+            View Full Menu on Telegram
+          </a>
 
-        <a class="btn" href="https://instagram.com/zero2drift" target="_blank" rel="noopener">
-          Business / Inquiries → Instagram DM @zero2drift
-        </a>
+          <div class="helper">
+            For menu + ordering, use Telegram.
+          </div>
 
-        <p class="fineprint">
-          By messaging, you confirm you are of legal age in your area.
-        </p>
+          <a class="btn" href="https://instagram.com/zero2drift" target="_blank" rel="noopener">
+            Business / Inquiries → Instagram DM @zero2drift
+          </a>
+
+          <p class="fineprint">
+            By messaging, you confirm you are of legal age in your area.
+          </p>
+        </section>
+
+        <footer class="footer">
+          <span class="dot"></span>
+          <span class="footer-strong">ZEROS™</span>
+          <span class="sep">•</span>
+          <span class="muted">No weird shit. Just quality.</span>
+        </footer>
+
       </section>
 
-      <footer class="footer">
-        <span class="dot"></span>
-        <span>ZEROS™</span>
-        <span class="sep">•</span>
-        <span class="muted">No weird shit. Just quality.</span>
-      </footer>
+      <!-- ===== MEMBERS TAB ===== -->
+      <section id="tab-members" class="tab-panel">
+
+        <header class="hero">
+          <div class="kicker">MEMBERS ONLY</div>
+          <h2 class="members-title">Private Access</h2>
+          <p class="tagline">Enter the password to unlock the burner line.</p>
+        </header>
+
+        <section class="card">
+
+          <!-- Password Gate -->
+          <div id="gate">
+            <label class="label" for="memberPass">Password</label>
+            <div class="row">
+              <input id="memberPass" class="input" type="password" placeholder="Enter password" autocomplete="off" />
+              <button id="unlockBtn" class="btn small primary" type="button">Unlock</button>
+            </div>
+            <p id="gateMsg" class="helper"></p>
+          </div>
+
+          <!-- Hidden Content -->
+          <div id="memberContent" class="hidden">
+
+            <div class="member-box">
+              <div class="member-label">Burner Phone</div>
+
+              <div id="burnerNumber" class="member-number">
+                ••• ••• ••••
+              </div>
+
+              <div class="row" style="margin-top: 14px;">
+                <button id="copyBtn" class="btn primary" type="button">Copy Number</button>
+                <a id="smsLink" class="btn" href="#">Text</a>
+              </div>
+
+              <p id="copyMsg" class="helper"></p>
+
+              <p class="fineprint" style="margin-top:12px;">
+                Keep this private. If it leaks, it gets rotated.
+              </p>
+            </div>
+
+          </div>
+
+        </section>
+
+      </section>
+
     </main>
   </div>
 
