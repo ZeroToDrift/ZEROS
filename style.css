@@ -75,7 +75,15 @@ body{
     0 0 25px var(--neon);
 }
 
+.tm{
+  font-size:16px;
+  vertical-align:super;
+  margin-left:4px;
+}
+
 .tagline{ margin-top:12px; opacity:0.85; }
+
+.helper{ margin: 8px 0 0; opacity:0.85; }
 
 /* Card */
 .card{
@@ -134,7 +142,9 @@ body{
 
 .footer-link:hover{
   transform:translateY(-1px);
-  text-shadow:0 0 10px var(--neonStrong);
+  text-shadow:
+    0 0 10px rgba(60,255,132,0.55),
+    0 0 25px rgba(60,255,132,0.35);
 }
 
 .dot{
@@ -147,6 +157,48 @@ body{
 
 /* Members */
 .members-wrap{ margin-top:26px; }
+
+.members-title{
+  margin: 0;
+  font-size: 28px;
+  font-weight: 800;
+}
+
+.row{
+  display:flex;
+  gap:12px;
+  align-items:center;
+}
+
+.label{
+  display:block;
+  margin-bottom:10px;
+  font-weight:700;
+  opacity:0.9;
+}
+
+.input{
+  flex:1;
+  padding:14px;
+  border-radius:14px;
+  border:1px solid rgba(255,255,255,0.18);
+  background:rgba(255,255,255,0.08);
+  color:white;
+  font-size:16px;
+  outline:none;
+}
+
+.btn.small{
+  width:auto;
+  margin:0;
+  padding:14px 16px;
+}
+
+.member-label{
+  font-weight:800;
+  margin-top:10px;
+}
+
 .member-number{
   font-size:22px;
   font-weight:900;
@@ -155,17 +207,20 @@ body{
   border:1px solid rgba(60,255,132,0.3);
   margin-top:10px;
 }
-/* ===== CHAOS GLITCH ===== */
 
+/* ===== CHAOS GLITCH ===== */
 .glitch-overlay{
   position: fixed;
-  inset: 0;
-  background: rgba(120,0,0,0.9);
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(120,0,0,0.95);
   display: flex;
   align-items: center;
   justify-content: center;
-  z-index: 999;
-  animation: flicker 0.2s infinite alternate;
+  z-index: 9999;
+  animation: flicker 0.15s infinite alternate;
 }
 
 .glitch-text{
