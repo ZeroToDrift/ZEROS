@@ -4,11 +4,14 @@ document.addEventListener("DOMContentLoaded", () => {
 
   const logoTrigger = document.getElementById("logoTrigger");
   const membersSection = document.getElementById("members");
+
   const toast = document.getElementById("toast");
+  const pressureEl = document.getElementById("pressureLevel");
+  const cultEl = document.getElementById("cultLine");
+  const taglineEl = document.getElementById("taglineText");
 
   const gate = document.getElementById("gate");
   const memberContent = document.getElementById("memberContent");
-
   const passInput = document.getElementById("memberPass");
   const unlockBtn = document.getElementById("unlockBtn");
   const gateMsg = document.getElementById("gateMsg");
@@ -18,10 +21,9 @@ document.addEventListener("DOMContentLoaded", () => {
   const copyMsg = document.getElementById("copyMsg");
   const smsLink = document.getElementById("smsLink");
 
-  const pressureEl = document.getElementById("pressureLevel");
-  const cultEl = document.getElementById("cultLine");
-
   const leafContainer = document.querySelector(".leaf-rain");
+
+  let isUnlocked = false;
 
   function showToast(msg){
     if (!toast) return;
@@ -35,26 +37,43 @@ document.addEventListener("DOMContentLoaded", () => {
     pressureEl.textContent = `PRESSURE LEVEL: ${state}`;
   }
 
+  // Prove JS is running
   showToast("JS ONLINE");
 
-  // Cult phrases
-  const cultPhrases = [
-    "Members move in silence.",
-    "Stay discreet.",
-    "Access is earned.",
-    "Eyes open.",
-    "Say less.",
-    "Not everyone gets in."
-  ];
+  // ===== Time theme (After Dark 10PM–5AM) =====
+  const hour = new Date().getHours();
+  const afterDark = (hour >= 22 || hour < 5);
+  if (afterDark) {
+    document.body.classList.add("after-dark");
+    if (taglineEl) taglineEl.textContent = "After Hours Protocol Active.";
+  }
+
+  // ===== Cult phrases =====
+  const cultPhrases = afterDark
+    ? [
+        "We see you.",
+        "Keep your voice low.",
+        "You’re closer than you think.",
+        "Not everyone gets in.",
+        "You weren’t supposed to find this.",
+        "Don’t repeat what you learn here."
+      ]
+    : [
+        "Members move in silence.",
+        "Stay discreet.",
+        "Access is earned.",
+        "Not everyone gets in.",
+        "Say less."
+      ];
 
   function rotateCult(){
     if (!cultEl) return;
     cultEl.textContent = cultPhrases[Math.floor(Math.random() * cultPhrases.length)];
   }
   rotateCult();
-  setInterval(rotateCult, 8000);
+  setInterval(rotateCult, 9000);
 
-  // Pressure baseline + scroll
+  // ===== Pressure behavior =====
   setPressure("STABLE");
   let scrollTimer = null;
   window.addEventListener("scroll", () => {
@@ -63,7 +82,7 @@ document.addEventListener("DOMContentLoaded", () => {
     scrollTimer = setTimeout(() => setPressure("STABLE"), 900);
   }, { passive: true });
 
-  // Members reveal: PRESS & HOLD logo (1.2s)
+  // ===== Members reveal (press & hold 1.2s) =====
   let holdTimer = null;
   let holding = false;
 
@@ -98,10 +117,12 @@ document.addEventListener("DOMContentLoaded", () => {
     logoTrigger.addEventListener("mouseleave", endHold);
   }
 
-  // Locked UI
+  // ===== Locked/Unlocked UI (no bypass) =====
   function setLockedUI(){
+    isUnlocked = false;
     if (numberEl) numberEl.textContent = "••• ••• ••••";
     if (copyBtn) copyBtn.disabled = true;
+
     if (smsLink) {
       smsLink.classList.add("disabled");
       smsLink.setAttribute("aria-disabled", "true");
@@ -111,6 +132,7 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   function setUnlockedUI(){
+    isUnlocked = true;
     gate?.classList.add("hidden");
     memberContent?.classList.remove("hidden");
 
@@ -129,24 +151,83 @@ document.addEventListener("DOMContentLoaded", () => {
 
   setLockedUI();
 
-  // Password
+  // ===== ACCESS DENIED escalation (always visible) =====
+  let wrongAttempts = 0;
+
+  function shakeScreen(ms=550){
+    const start = performance.now();
+    function step(t){
+      const dt = t - start;
+      const strength = Math.max(0, 1 - dt / ms);
+      const x = (Math.random() - 0.5) * 18 * strength;
+      const y = (Math.random() - 0.5) * 18 * strength;
+      document.documentElement.style.transform = `translate(${x}px, ${y}px)`;
+      if (dt < ms) requestAnimationFrame(step);
+      else document.documentElement.style.transform = "";
+    }
+    requestAnimationFrame(step);
+  }
+
+  function showDeniedOverlay(){
+    // Full-screen overlay so it can’t be “out of view”
+    const overlay = document.createElement("div");
+    overlay.className = "denied-overlay";
+    overlay.innerHTML = `
+      <div class="denied-box">
+        <div class="denied-title">ACCESS DENIED</div>
+        <div class="denied-sub">Stop guessing. You’re being logged.</div>
+      </div>
+    `;
+    document.body.appendChild(overlay);
+    shakeScreen(700);
+
+    setTimeout(() => {
+      overlay.remove();
+    }, 1400);
+  }
+
   function unlockAttempt(){
-    const attempt = (passInput?.value || "").trim();
+    const attempt = (passInput?.value || "").normalize("NFKC").trim();
 
     if (!attempt) {
-      gateMsg.textContent = "Enter the password.";
+      if (gateMsg) gateMsg.textContent = "Enter the password.";
       return;
     }
 
     if (attempt === MEMBER_PASSWORD) {
-      gateMsg.textContent = "";
+      wrongAttempts = 0;
+      if (gateMsg) gateMsg.textContent = "";
       setUnlockedUI();
       return;
     }
 
-    gateMsg.textContent = "WRONG PASSWORD.";
-    passInput.value = "";
-    passInput.focus();
+    wrongAttempts++;
+
+    // escalating messages
+    if (gateMsg) {
+      if (wrongAttempts === 1) gateMsg.textContent = "WRONG PASSWORD.";
+      else if (wrongAttempts === 2) gateMsg.textContent = "Try that again… slower.";
+      else if (wrongAttempts === 3) gateMsg.textContent = "You’re testing limits.";
+      else if (wrongAttempts === 4) gateMsg.textContent = "Last warning.";
+      else gateMsg.textContent = "";
+    }
+
+    // escalate pressure label
+    if (wrongAttempts >= 3) setPressure("MONITORED");
+    else setPressure("ELEVATED");
+
+    // On 5+ attempts: big visible effect
+    if (wrongAttempts >= 5) {
+      showDeniedOverlay();
+      wrongAttempts = 0; // reset escalation cycle
+      setPressure("DENIED");
+    }
+
+    // clear input
+    if (passInput) {
+      passInput.value = "";
+      passInput.focus();
+    }
   }
 
   unlockBtn?.addEventListener("click", unlockAttempt);
@@ -154,13 +235,13 @@ document.addEventListener("DOMContentLoaded", () => {
     if (e.key === "Enter") unlockAttempt();
   });
 
-  // Copy (guarded)
+  // ===== Copy guarded =====
   copyBtn?.addEventListener("click", async () => {
-    if (!copyBtn || copyBtn.disabled) return;
+    if (!isUnlocked) return; // hard guard
     try{
       await navigator.clipboard.writeText(MEMBERS_NUMBER);
-      copyMsg.textContent = "Copied.";
-      setTimeout(() => (copyMsg.textContent = ""), 1200);
+      if (copyMsg) copyMsg.textContent = "Copied.";
+      setTimeout(() => { if (copyMsg) copyMsg.textContent = ""; }, 1200);
     } catch {
       const ta = document.createElement("textarea");
       ta.value = MEMBERS_NUMBER;
@@ -168,14 +249,14 @@ document.addEventListener("DOMContentLoaded", () => {
       ta.select();
       document.execCommand("copy");
       document.body.removeChild(ta);
-      copyMsg.textContent = "Copied.";
-      setTimeout(() => (copyMsg.textContent = ""), 1200);
+      if (copyMsg) copyMsg.textContent = "Copied.";
+      setTimeout(() => { if (copyMsg) copyMsg.textContent = ""; }, 1200);
     }
   });
 
-  // POT LEAF RAIN (inline SVG; iPhone-safe)
+  // ===== Pot leaf rain (improved cinematic) =====
   if (leafContainer) {
-    const count = 38;
+    const count = 26;
 
     const svgMarkup = `
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" class="leaf-svg">
@@ -184,24 +265,29 @@ document.addEventListener("DOMContentLoaded", () => {
       </svg>
     `;
 
+    // clear old leaves if any (avoids duplicates after refresh/caching)
+    leafContainer.innerHTML = "";
+
     for (let i = 0; i < count; i++) {
       const leaf = document.createElement("div");
       leaf.className = "leaf";
       leaf.innerHTML = svgMarkup;
 
       leaf.style.left = (Math.random() * 100) + "vw";
-      leaf.style.top = (-Math.random() * 120) + "vh";
+      leaf.style.top  = (-Math.random() * 140) + "vh";
 
-      const size = 14 + Math.random() * 22;
-      leaf.style.width = size + "px";
+      const size = 10 + Math.random() * 14; // 10–24px
+      leaf.style.width  = size + "px";
       leaf.style.height = size + "px";
 
-      leaf.style.opacity = (0.10 + Math.random() * 0.18).toFixed(2);
-      leaf.style.animationDuration = (12 + Math.random() * 18) + "s";
-      leaf.style.animationDelay = (Math.random() * 6) + "s";
+      leaf.style.opacity = (0.06 + Math.random() * 0.08).toFixed(2);
+      leaf.style.animationDuration = (18 + Math.random() * 22) + "s";
+      leaf.style.animationDelay    = (Math.random() * 8) + "s";
 
       leaf.style.setProperty("--drift", (Math.random() * 160 - 80).toFixed(0) + "px");
-      leaf.style.setProperty("--spin", (Math.random() * 720 - 360).toFixed(0) + "deg");
+      leaf.style.setProperty("--rot0",  (Math.random() * 360).toFixed(0) + "deg");
+      leaf.style.setProperty("--rot1",  (Math.random() * 720 - 360).toFixed(0) + "deg");
+      leaf.style.setProperty("--blur",  (Math.random() < 0.35 ? (0.6 + Math.random() * 1.4).toFixed(1) : "0") + "px");
 
       leafContainer.appendChild(leaf);
     }
