@@ -17,19 +17,17 @@
     <main class="container">
 
       <!-- Toast -->
-      <div id="toast" class="toast hidden" aria-live="polite"></div>
+      <div id="toast" class="toast hidden"></div>
 
       <!-- ===== PUBLIC ===== -->
       <section id="public">
         <header class="hero">
           <div class="kicker">PRESSURE SEASON</div>
 
-          <!-- Secret trigger: 5 taps reveals members -->
           <h1 class="logo no-zoom"
               id="logoTrigger"
               role="button"
-              tabindex="0"
-              aria-label="ZEROS (tap 5 times)">
+              tabindex="0">
             ZEROS<span class="tm">™</span>
           </h1>
 
@@ -54,15 +52,23 @@
           </p>
         </section>
 
+        <!-- Footer with YouTube link -->
         <footer class="footer">
           <span class="dot"></span>
-          <span class="footer-strong">ZEROS™</span>
+
+          <a class="footer-strong footer-link"
+             href="https://youtu.be/dQw4w9WgXcQ?si=k6fLU03Dcl_gIcvY"
+             target="_blank"
+             rel="noopener">
+            ZEROS™
+          </a>
+
           <span class="sep">•</span>
           <span class="muted">No weird shit. Just quality.</span>
         </footer>
       </section>
 
-      <!-- ===== MEMBERS (HIDDEN UNTIL SECRET) ===== -->
+      <!-- ===== MEMBERS (Hidden until 5 taps) ===== -->
       <section id="members" class="members-wrap hidden">
         <header class="hero">
           <div class="kicker">MEMBERS ONLY</div>
@@ -71,7 +77,7 @@
         </header>
 
         <section class="card">
-          <!-- Password Gate -->
+
           <div id="gate" class="gate">
             <label class="label" for="memberPass">Password</label>
 
@@ -80,31 +86,22 @@
               <button id="unlockBtn" class="btn small primary" type="button">Unlock</button>
             </div>
 
-            <p id="gateMsg" class="helper" style="margin: 10px 0 0;"></p>
-            <p class="fineprint" style="margin-top: 12px;">
-              Tip: unlocked for this session.
-            </p>
+            <p id="gateMsg" class="helper"></p>
           </div>
 
-          <!-- Hidden Content -->
-          <div id="memberContent" class="member-content hidden">
-            <div class="member-box">
-              <div class="member-label">Members Line</div>
+          <div id="memberContent" class="hidden">
+            <div class="member-label">Members Line</div>
 
-              <div id="burnerNumber" class="member-number">••• ••• ••••</div>
+            <div id="burnerNumber" class="member-number">••• ••• ••••</div>
 
-              <div class="row" style="margin-top: 14px;">
-                <button id="copyBtn" class="btn primary" type="button" disabled>Copy Number</button>
-                <a id="smsLink" class="btn disabled" href="#" aria-disabled="true">Text</a>
-              </div>
-
-              <p id="copyMsg" class="helper" style="margin: 12px 0 0;"></p>
-
-              <p class="fineprint" style="margin-top:12px;">
-                Keep this private. If it leaks, it gets rotated.
-              </p>
+            <div class="row" style="margin-top: 14px;">
+              <button id="copyBtn" class="btn primary" type="button" disabled>Copy Number</button>
+              <a id="smsLink" class="btn disabled" href="#" aria-disabled="true">Text</a>
             </div>
+
+            <p id="copyMsg" class="helper"></p>
           </div>
+
         </section>
       </section>
 
