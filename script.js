@@ -1,4 +1,4 @@
-// ===== ZEROS Stealth Members + Password Gate =====
+// ===== ZEROS Stealth Members + Password Gate (iOS-friendly) =====
 
 const MEMBER_PASSWORD = "BigJigglyBalls";
 const MEMBERS_NUMBER = "(646) 332-9902";
@@ -8,11 +8,9 @@ const SESSION_REVEAL_KEY = "zeros_members_revealed";
 
 function $(id){ return document.getElementById(id); }
 
-// Elements
 const logoTrigger = $("logoTrigger");
-const secretHint = $("secretHint");
-
 const membersSection = $("members");
+const toast = $("toast");
 
 const gate = $("gate");
 const memberContent = $("memberContent");
@@ -25,7 +23,15 @@ const copyBtn = $("copyBtn");
 const copyMsg = $("copyMsg");
 const smsLink = $("smsLink");
 
-// ---------- Stealth reveal (5 taps) ----------
+// ----- Toast -----
+function showToast(msg){
+  if (!toast) return;
+  toast.textContent = msg;
+  toast.classList.remove("hidden");
+  setTimeout(() => toast.classList.add("hidden"), 1400);
+}
+
+// ----- Stealth reveal (5 taps within 3s) -----
 let tapCount = 0;
 let tapTimer = null;
 const TAP_WINDOW_MS = 3000;
@@ -37,29 +43,22 @@ function revealMembersSection(){
   membersSection.classList.remove("hidden");
   sessionStorage.setItem(SESSION_REVEAL_KEY, "1");
 
-  // Scroll it into view smoothly
-  membersSection.scrollIntoView({ behavior: "smooth", block: "start" });
+  showToast("Members unlocked");
 
-  if (secretHint) {
-    secretHint.textContent = "";
-  }
+  setTimeout(() => {
+    membersSection.scrollIntoView({ behavior: "smooth", block: "start" });
+    passInput?.focus();
+  }, 150);
 }
 
-function handleSecretTap(){
+function registerTap(){
   tapCount += 1;
 
-  // Start/reset timer window
   if (tapTimer) clearTimeout(tapTimer);
   tapTimer = setTimeout(() => {
     tapCount = 0;
-    if (secretHint) secretHint.textContent = "";
+    tapTimer = null;
   }, TAP_WINDOW_MS);
-
-  // Optional tiny feedback (subtle)
-  if (secretHint) {
-    const left = Math.max(0, TAP_TARGET - tapCount);
-    secretHint.textContent = left ? "" : "";
-  }
 
   if (tapCount >= TAP_TARGET) {
     tapCount = 0;
@@ -69,19 +68,32 @@ function handleSecretTap(){
   }
 }
 
-logoTrigger?.addEventListener("click", handleSecretTap);
-logoTrigger?.addEventListener("touchend", (e) => {
-  // Prevent double firing on some mobile browsers
+// Use pointer events (more reliable on iOS)
+logoTrigger?.addEventListener("pointerup", (e) => {
   e.preventDefault();
-  handleSecretTap();
+  registerTap();
+});
+
+// Fallback for older iOS Safari
+logoTrigger?.addEventListener("touchend", (e) => {
+  e.preventDefault();
+  registerTap();
 }, { passive: false });
 
-// If previously revealed this session, keep it revealed
+// Keyboard accessibility (optional)
+logoTrigger?.addEventListener("keydown", (e) => {
+  if (e.key === "Enter" || e.key === " ") {
+    e.preventDefault();
+    registerTap();
+  }
+});
+
+// Keep revealed if already revealed this session
 if (sessionStorage.getItem(SESSION_REVEAL_KEY) === "1") {
   membersSection?.classList.remove("hidden");
 }
 
-// ---------- Gate logic ----------
+// ----- Gate logic -----
 function setLockedUI(isLocked){
   if (copyBtn) copyBtn.disabled = isLocked;
 
@@ -120,13 +132,12 @@ function tryUnlock(){
   if (attempt === MEMBER_PASSWORD) {
     sessionStorage.setItem(SESSION_UNLOCK_KEY, "1");
     gateMsg.textContent = "";
+    showToast("Access granted");
     revealNumber();
   } else {
-    gateMsg.textContent = "Try Again Nigga.";
-    if (passInput) {
-      passInput.value = "";
-      passInput.focus();
-    }
+    gateMsg.textContent = "WRONG PASSWORD.";
+    passInput.value = "";
+    passInput.focus();
   }
 }
 
@@ -135,7 +146,7 @@ passInput?.addEventListener("keydown", (e) => {
   if (e.key === "Enter") tryUnlock();
 });
 
-// Copy is guarded (no bypass)
+// Copy is guarded
 copyBtn?.addEventListener("click", async () => {
   const unlocked = sessionStorage.getItem(SESSION_UNLOCK_KEY) === "1";
   if (!unlocked) {
