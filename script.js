@@ -283,3 +283,22 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 });
+// ===== LEAF RAIN GENERATOR =====
+const leafContainer = document.querySelector(".leaf-rain");
+
+if (leafContainer) {
+  const leafCount = 25; // adjust amount here
+
+  for (let i = 0; i < leafCount; i++) {
+    const leaf = document.createElement("div");
+    leaf.className = "leaf";
+    leaf.textContent = "🍃";
+
+    leaf.style.left = Math.random() * 100 + "vw";
+    leaf.style.animationDuration = (8 + Math.random() * 12) + "s";
+    leaf.style.animationDelay = Math.random() * 10 + "s";
+    leaf.style.fontSize = (16 + Math.random() * 20) + "px";
+
+    leafContainer.appendChild(leaf);
+  }
+}
