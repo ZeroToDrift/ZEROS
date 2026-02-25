@@ -1,5 +1,5 @@
 document.addEventListener("DOMContentLoaded", () => {
-  const MEMBER_PASSWORD = "BigJigglyBalls";
+  const MEMBER_PASSWORD = "ZerosMO";
   const MEMBERS_NUMBER = "(646) 444-4277";
 
   const logoTrigger = document.getElementById("logoTrigger");
