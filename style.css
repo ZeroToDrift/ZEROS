@@ -155,3 +155,31 @@ body{
   border:1px solid rgba(60,255,132,0.3);
   margin-top:10px;
 }
+/* ===== CHAOS GLITCH ===== */
+
+.glitch-overlay{
+  position: fixed;
+  inset: 0;
+  background: rgba(120,0,0,0.9);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 999;
+  animation: flicker 0.2s infinite alternate;
+}
+
+.glitch-text{
+  font-size: 42px;
+  font-weight: 900;
+  letter-spacing: 4px;
+  color: white;
+  text-shadow:
+    2px 0 red,
+    -2px 0 cyan,
+    0 0 20px white;
+}
+
+@keyframes flicker{
+  from { opacity: 0.85; }
+  to   { opacity: 1; }
+}
