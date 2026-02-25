@@ -135,7 +135,7 @@ function tryUnlock(){
     showToast("Access granted");
     revealNumber();
   } else {
-    gateMsg.textContent = "WRONG PASSWORD.";
+    gateMsg.textContent = "YOU SUCK.";
     passInput.value = "";
     passInput.focus();
   }
