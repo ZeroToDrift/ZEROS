@@ -258,3 +258,13 @@ body{
 @supports (-webkit-touch-callout: none){
   .site-bg{ background-attachment: scroll; }
 }
+/* Pot leaf SVG inside each falling leaf */
+.leaf-svg{
+  width:100%;
+  height:100%;
+  display:block;
+  color:#3cff84; /* neon */
+}
+.after-dark .leaf-svg{
+  color:#ff3c6f; /* after-dark neon */
+}
