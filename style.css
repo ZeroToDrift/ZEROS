@@ -38,7 +38,7 @@ body{
   filter:brightness(1.15) saturate(1.2);
 }
 
-/* POT LEAF RAIN (ABOVE BG, BELOW CONTENT) */
+/* LEAVES: above background, below content */
 .leaf-rain{
   pointer-events:none;
   position:absolute;
@@ -49,16 +49,17 @@ body{
 
 .leaf{
   position:absolute;
-  top:-30vh;
+  top:-35vh;
   width:18px;
   height:18px;
-  opacity:0.22; /* visible */
-  animation: fall linear infinite;
+  opacity:0.18;
   will-change: transform;
+  animation: fall linear infinite;
+  filter: drop-shadow(0 0 12px rgba(60,255,132,0.12));
 }
 
 @keyframes fall{
-  0%{ transform: translate3d(0,-30vh,0) rotate(0deg); }
+  0% { transform: translate3d(0,-35vh,0) rotate(0deg); }
   100%{ transform: translate3d(var(--drift, 40px),120vh,0) rotate(var(--spin, 360deg)); }
 }
 
@@ -69,7 +70,7 @@ body{
   color: var(--neon);
 }
 
-/* CONTENT ABOVE LEAVES */
+/* CONTENT */
 .container{
   position:relative;
   z-index:2;
