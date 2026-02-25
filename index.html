@@ -16,18 +16,24 @@
   <div class="site-bg">
     <main class="container">
 
+      <!-- Toast -->
+      <div id="toast" class="toast hidden" aria-live="polite"></div>
+
       <!-- ===== PUBLIC ===== -->
       <section id="public">
         <header class="hero">
           <div class="kicker">PRESSURE SEASON</div>
 
           <!-- Secret trigger: 5 taps reveals members -->
-          <h1 class="logo" id="logoTrigger" aria-label="ZEROS">
+          <h1 class="logo no-zoom"
+              id="logoTrigger"
+              role="button"
+              tabindex="0"
+              aria-label="ZEROS (tap 5 times)">
             ZEROS<span class="tm">™</span>
           </h1>
 
           <p class="tagline">Fast. Discreet. Licensed.</p>
-          <p class="helper subtle" id="secretHint" aria-live="polite"></p>
         </header>
 
         <section class="card">
@@ -65,7 +71,6 @@
         </header>
 
         <section class="card">
-
           <!-- Password Gate -->
           <div id="gate" class="gate">
             <label class="label" for="memberPass">Password</label>
@@ -100,7 +105,6 @@
               </p>
             </div>
           </div>
-
         </section>
       </section>
 
