@@ -267,3 +267,41 @@ body{
 .after-dark .pressure{
   color:#ff3c6f;
 }
+/* ===== LEAF RAIN ===== */
+
+.leaf-rain{
+  pointer-events:none;
+  position:fixed;
+  inset:0;
+  overflow:hidden;
+  z-index:0;
+}
+
+.leaf{
+  position:absolute;
+  top:-10%;
+  font-size:22px;
+  opacity:0.08;
+  animation:fall linear infinite;
+}
+
+@keyframes fall{
+  0%{
+    transform:translateY(-10vh) rotate(0deg);
+  }
+  100%{
+    transform:translateY(110vh) rotate(360deg);
+  }
+}
+
+/* Make sure your content stays above */
+.site-bg{
+  position:relative;
+  z-index:1;
+}
+
+/* After dark tint */
+.after-dark .leaf{
+  opacity:0.05;
+  color:#ff3c6f;
+}
