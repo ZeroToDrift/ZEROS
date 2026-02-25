@@ -223,41 +223,41 @@ document.addEventListener("DOMContentLoaded", () => {
     } catch {}
   });
 
-  // ===== POT LEAF RAIN (SVG) =====
-  const leafSVG = encodeURIComponent(
-    `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
-      <path fill="#3cff84" d="M32 4c2 8 3 16 2 24 4-6 10-11 18-14-5 10-10 18-18 24 6-1 13-1 22 2-9 6-17 9-24 8 5 5 9 12 10 22-9-5-15-11-18-18-3 7-9 13-18 18 1-10 5-17 10-22-7 1-15-2-24-8 9-3 16-3 22-2-8-6-13-14-18-24 8 3 14 8 18 14-1-8 0-16 2-24z"/>
-      <path fill="#2bff76" d="M31 26c0 10-1 20-3 30h8c-2-10-3-20-3-30h-2z" opacity="0.9"/>
-    </svg>`
-  );
+// ===== POT LEAF RAIN (INLINE SVG - iPhone proof) =====
+if (leafContainer) {
+  const count = 34;
 
-  const leafURL = `data:image/svg+xml,${leafSVG}`;
+  const svgMarkup = `
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" class="leaf-svg">
+      <path fill="currentColor" d="M32 4c2 8 3 16 2 24 4-6 10-11 18-14-5 10-10 18-18 24 6-1 13-1 22 2-9 6-17 9-24 8 5 5 9 12 10 22-9-5-15-11-18-18-3 7-9 13-18 18 1-10 5-17 10-22-7 1-15-2-24-8 9-3 16-3 22-2-8-6-13-14-18-24 8 3 14 8 18 14-1-8 0-16 2-24z"/>
+      <path fill="currentColor" d="M31 26c0 10-1 20-3 30h8c-2-10-3-20-3-30h-2z" opacity="0.9"/>
+    </svg>
+  `;
 
-  if (leafContainer) {
-    const count = 34;
+  for (let i = 0; i < count; i++) {
+    const leaf = document.createElement("div");
+    leaf.className = "leaf";
 
-    for (let i = 0; i < count; i++) {
-      const leaf = document.createElement("div");
-      leaf.className = "leaf";
-      leaf.style.backgroundImage = `url(${leafURL})`;
+    // Put the SVG inside the element so it always renders
+    leaf.innerHTML = svgMarkup;
 
-      leaf.style.left = (Math.random() * 100) + "vw";
-      leaf.style.top = (-Math.random() * 100) + "vh";
+    leaf.style.left = (Math.random() * 100) + "vw";
+    leaf.style.top = (-Math.random() * 100) + "vh";
 
-      const size = 14 + Math.random() * 18;
-      leaf.style.width = size + "px";
-      leaf.style.height = size + "px";
+    const size = 14 + Math.random() * 18;
+    leaf.style.width = size + "px";
+    leaf.style.height = size + "px";
 
-      leaf.style.opacity = (0.06 + Math.random() * 0.10).toFixed(2);
-      leaf.style.animationDuration = (14 + Math.random() * 16) + "s";
-      leaf.style.animationDelay = (Math.random() * 6) + "s";
+    leaf.style.opacity = (0.08 + Math.random() * 0.12).toFixed(2);
+    leaf.style.animationDuration = (14 + Math.random() * 16) + "s";
+    leaf.style.animationDelay = (Math.random() * 6) + "s";
 
-      const drift = (Math.random() * 120 - 60).toFixed(0) + "px";
-      const spin = (Math.random() * 720 - 360).toFixed(0) + "deg";
-      leaf.style.setProperty("--drift", drift);
-      leaf.style.setProperty("--spin", spin);
+    // drift + spin
+    const drift = (Math.random() * 120 - 60).toFixed(0) + "px";
+    const spin = (Math.random() * 720 - 360).toFixed(0) + "deg";
+    leaf.style.setProperty("--drift", drift);
+    leaf.style.setProperty("--spin", spin);
 
-      leafContainer.appendChild(leaf);
-    }
+    leafContainer.appendChild(leaf);
   }
-});
+}
