@@ -47,7 +47,6 @@ body{
   text-align: center;
   position: relative;
 
-  /* make it more neon */
   filter: brightness(1.15) saturate(1.2);
 }
 
@@ -69,6 +68,26 @@ body{
   gap: 22px;
   position: relative;
   z-index: 1;
+}
+
+/* ===== Toast ===== */
+.toast{
+  position: fixed;
+  left: 50%;
+  top: 18px;
+  transform: translateX(-50%);
+  z-index: 50;
+
+  padding: 10px 14px;
+  border-radius: 999px;
+
+  background: rgba(0,0,0,0.55);
+  border: 1px solid rgba(60,255,132,0.45);
+  box-shadow: 0 0 18px rgba(60,255,132,0.18);
+
+  font-weight: 700;
+  font-size: 13px;
+  color: rgba(255,255,255,0.92);
 }
 
 /* ===== Hero ===== */
@@ -103,8 +122,7 @@ body{
   font-size: 52px;
   letter-spacing: 8px;
   font-weight: 800;
-  cursor: default;
-  user-select: none;
+  cursor: pointer;
 
   text-shadow:
     0 0 10px var(--neonStrong),
@@ -113,6 +131,16 @@ body{
     0 0 80px rgba(176,107,255,0.35);
 
   animation: pulseLogo 3s ease-in-out infinite;
+
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* STOP iPhone zoom/select on the trigger */
+.no-zoom{
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-touch-callout: none;
+  touch-action: manipulation; /* reduces double-tap zoom behavior */
 }
 
 .tm{
@@ -130,12 +158,6 @@ body{
 .helper{
   font-size: 14px;
   color: rgba(255,255,255,0.72);
-}
-
-.helper.subtle{
-  min-height: 18px;
-  margin: 8px 0 0;
-  opacity: 0.75;
 }
 
 /* ===== Card ===== */
@@ -234,9 +256,7 @@ body{
 }
 
 /* ===== Members styling ===== */
-.members-wrap{
-  margin-top: 26px;
-}
+.members-wrap{ margin-top: 26px; }
 
 .members-title{
   margin: 0;
