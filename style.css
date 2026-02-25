@@ -6,13 +6,11 @@
   --text: rgba(255,255,255,0.92);
   --muted: rgba(255,255,255,0.70);
 
-  --neon: #37ff7a;      /* green glow */
-  --neon2: #19d968;     /* deeper green */
-  --purple: #a855f7;    /* purple accent */
+  --neon: #37ff7a;
+  --neon2: #19d968;
+  --purple: #a855f7;
 
   --border: rgba(55,255,122,0.26);
-  --border2: rgba(168,85,247,0.22);
-
   --shadow: 0 18px 50px rgba(0,0,0,0.65);
 }
 
@@ -27,7 +25,7 @@ body{
   background: var(--bg);
 }
 
-/* Full-page background image + overlays */
+/* ===== Background Section ===== */
 .site-bg{
   min-height: 100vh;
 
@@ -35,7 +33,7 @@ body{
     linear-gradient(180deg, rgba(0,0,0,0.84), rgba(0,0,0,0.72)),
     radial-gradient(circle at 50% 30%, rgba(55,255,122,0.18), transparent 56%),
     radial-gradient(circle at 55% 60%, rgba(168,85,247,0.10), transparent 62%),
-    url("zeros-neon.jpg");
+    url("1919B37D-65D2-4E03-9227-57B6B96BCD69.png");
 
   background-size: cover;
   background-position: center;
@@ -51,7 +49,7 @@ body{
   position: relative;
 }
 
-/* subtle grain (optional but makes it feel premium) */
+/* subtle texture */
 .site-bg::after{
   content: "";
   position: absolute;
@@ -74,24 +72,6 @@ body{
 }
 
 /* ===== Hero ===== */
-.hero{
-  padding: 6px 8px 2px;
-}
-
-.kicker{
-  display: inline-block;
-  font-size: 12px;
-  letter-spacing: 3px;
-  text-transform: uppercase;
-  padding: 7px 12px;
-  border-radius: 999px;
-  border: 1px solid rgba(55,255,122,0.30);
-  background: rgba(0,0,0,0.30);
-  color: rgba(255,255,255,0.82);
-  box-shadow: 0 0 18px rgba(55,255,122,0.10);
-  margin-bottom: 14px;
-}
-
 .logo{
   margin: 0;
   font-size: 48px;
@@ -100,15 +80,13 @@ body{
   text-shadow:
     0 0 18px rgba(55,255,122,0.22),
     0 0 36px rgba(168,85,247,0.10);
-  animation: titleGlow 3.0s ease-in-out infinite;
+  animation: titleGlow 3s ease-in-out infinite;
 }
 
 .tm{
   font-size: 18px;
   vertical-align: super;
-  letter-spacing: 0;
   margin-left: 3px;
-  opacity: 0.95;
 }
 
 .tagline{
@@ -129,7 +107,6 @@ body{
   border: 1px solid var(--border);
   box-shadow:
     0 0 30px rgba(55,255,122,0.10),
-    0 0 60px rgba(168,85,247,0.06),
     var(--shadow);
 
   animation: cardGlow 3.4s ease-in-out infinite;
@@ -158,7 +135,7 @@ body{
   border: 1px solid rgba(255,255,255,0.14);
 
   box-shadow: 0 10px 25px rgba(0,0,0,0.35);
-  transition: transform 0.12s ease, box-shadow 0.12s ease, border-color 0.12s ease, filter 0.12s ease;
+  transition: transform 0.12s ease, box-shadow 0.12s ease, border-color 0.12s ease;
 }
 
 .btn:hover{
@@ -169,30 +146,15 @@ body{
     0 0 22px rgba(55,255,122,0.16);
 }
 
-.btn:active{
-  transform: scale(0.985);
-}
-
-/* Primary button: green -> subtle purple edge glow */
 .btn.primary{
   background: linear-gradient(90deg, rgba(25,217,104,0.95), rgba(55,255,122,0.95));
   border: 1px solid rgba(55,255,122,0.45);
   box-shadow:
     0 14px 30px rgba(0,0,0,0.45),
-    0 0 26px rgba(55,255,122,0.25),
-    0 0 46px rgba(168,85,247,0.10);
+    0 0 26px rgba(55,255,122,0.25);
 }
 
-.btn.primary:hover{
-  filter: brightness(1.03);
-  border-color: rgba(55,255,122,0.70);
-  box-shadow:
-    0 16px 34px rgba(0,0,0,0.50),
-    0 0 30px rgba(55,255,122,0.30),
-    0 0 70px rgba(168,85,247,0.14);
-}
-
-/* ===== Fine print ===== */
+/* ===== Fine Print ===== */
 .fineprint{
   margin: 16px 0 0;
   font-size: 12px;
@@ -200,61 +162,27 @@ body{
   line-height: 1.35;
 }
 
-/* ===== Footer ===== */
-.footer{
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 10px;
-
-  font-size: 12px;
-  color: rgba(255,255,255,0.66);
-
-  padding: 6px 4px 0;
-}
-
-.footer-strong{
-  color: rgba(255,255,255,0.86);
-  letter-spacing: 0.6px;
-}
-
-.sep{ opacity: 0.55; }
-
-.muted{
-  color: rgba(255,255,255,0.62);
-}
-
-.dot{
-  width: 8px;
-  height: 8px;
-  border-radius: 999px;
-  background: var(--neon);
-  box-shadow:
-    0 0 16px rgba(55,255,122,0.55),
-    0 0 28px rgba(168,85,247,0.18);
-}
-
 /* ===== Animations ===== */
 @keyframes titleGlow{
-  0%   { text-shadow: 0 0 16px rgba(55,255,122,0.18), 0 0 34px rgba(168,85,247,0.08); }
-  50%  { text-shadow: 0 0 26px rgba(55,255,122,0.34), 0 0 54px rgba(168,85,247,0.14); }
-  100% { text-shadow: 0 0 16px rgba(55,255,122,0.18), 0 0 34px rgba(168,85,247,0.08); }
+  0%   { text-shadow: 0 0 16px rgba(55,255,122,0.18); }
+  50%  { text-shadow: 0 0 28px rgba(55,255,122,0.34); }
+  100% { text-shadow: 0 0 16px rgba(55,255,122,0.18); }
 }
 
 @keyframes cardGlow{
-  0%   { box-shadow: 0 0 26px rgba(55,255,122,0.10), 0 0 60px rgba(168,85,247,0.06), var(--shadow); }
-  50%  { box-shadow: 0 0 40px rgba(55,255,122,0.18), 0 0 80px rgba(168,85,247,0.10), var(--shadow); }
-  100% { box-shadow: 0 0 26px rgba(55,255,122,0.10), 0 0 60px rgba(168,85,247,0.06), var(--shadow); }
+  0%   { box-shadow: 0 0 26px rgba(55,255,122,0.10), var(--shadow); }
+  50%  { box-shadow: 0 0 40px rgba(55,255,122,0.18), var(--shadow); }
+  100% { box-shadow: 0 0 26px rgba(55,255,122,0.10), var(--shadow); }
 }
 
-/* ===== Mobile tweaks ===== */
+/* ===== Mobile ===== */
 @media (max-width: 380px){
   .logo{ font-size: 42px; letter-spacing: 6px; }
   .tagline{ font-size: 16px; }
   .btn{ font-size: 16px; padding: 15px 12px; }
 }
 
-/* ===== Fix for iOS background-attachment: fixed weirdness ===== */
+/* Fix for iOS background attachment issue */
 @supports (-webkit-touch-callout: none){
   .site-bg{
     background-attachment: scroll;
