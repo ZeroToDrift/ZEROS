@@ -216,3 +216,75 @@ body{
 
 /* ===== ANIMATIONS ===== */
 @keyframes pulseLogo
+/* ===== Members Gate Fix + Styling ===== */
+.hidden{ display: none !important; }
+
+.members-wrap{ margin-top: 26px; }
+
+.members-title{
+  margin: 0;
+  font-size: 34px;
+  font-weight: 800;
+  letter-spacing: 0.5px;
+}
+
+.gate{ text-align: left; }
+
+.label{
+  display: block;
+  text-align: center;
+  font-size: 14px;
+  font-weight: 700;
+  color: rgba(255,255,255,0.85);
+  margin-bottom: 10px;
+}
+
+.row{
+  display: flex;
+  gap: 12px;
+  align-items: center;
+}
+
+.input{
+  flex: 1;
+  padding: 14px 14px;
+  border-radius: 14px;
+  border: 1px solid rgba(255,255,255,0.18);
+  background: rgba(255,255,255,0.08);
+  color: rgba(255,255,255,0.95);
+  font-size: 16px;
+  outline: none;
+}
+
+.input:focus{
+  border-color: rgba(60,255,132,0.70);
+  box-shadow: 0 0 0 3px rgba(60,255,132,0.18);
+}
+
+.btn.small{
+  width: auto;
+  padding: 14px 16px;
+  border-radius: 14px;
+  margin: 0;
+  white-space: nowrap;
+}
+
+.member-label{
+  text-align: center;
+  font-size: 16px;
+  font-weight: 700;
+  color: rgba(255,255,255,0.88);
+  margin-bottom: 10px;
+}
+
+.member-number{
+  text-align: center;
+  font-size: 22px;
+  letter-spacing: 2px;
+  font-weight: 900;
+  padding: 14px 14px;
+  border-radius: 14px;
+  border: 1px solid rgba(60,255,132,0.30);
+  background: rgba(0,0,0,0.22);
+  box-shadow: 0 0 20px rgba(60,255,132,0.10);
+}
