@@ -24,7 +24,8 @@ document.addEventListener("DOMContentLoaded", () => {
   const cultEl = document.getElementById("cultLine");
   const taglineEl = document.getElementById("taglineText");
 
-  let wrongAttempts = 0;
+  // Leaf container
+  const leafContainer = document.querySelector(".leaf-rain");
 
   // ===== Helpers =====
   function normalize(str){
@@ -43,7 +44,7 @@ document.addEventListener("DOMContentLoaded", () => {
     pressureEl.textContent = `PRESSURE LEVEL: ${state}`;
   }
 
-  // ===== CULT PHRASES =====
+  // ===== Cult phrases =====
   const cultPhrases = [
     "Members move in silence.",
     "Stay discreet.",
@@ -56,27 +57,26 @@ document.addEventListener("DOMContentLoaded", () => {
 
   function rotateCult(){
     if (!cultEl) return;
-    cultEl.textContent =
-      cultPhrases[Math.floor(Math.random() * cultPhrases.length)];
+    cultEl.textContent = cultPhrases[Math.floor(Math.random() * cultPhrases.length)];
   }
 
   rotateCult();
   setInterval(rotateCult, 8000);
 
-  // ===== AFTER DARK MODE =====
+  // ===== After dark mode (10PM–5AM) =====
   const hour = new Date().getHours();
   if (hour >= 22 || hour < 5) {
     document.body.classList.add("after-dark");
     if (taglineEl) taglineEl.textContent = "After Hours Protocol Active.";
   }
 
-  // ===== RARE FLICKER =====
+  // ===== Rare silent flicker (2%) =====
   if (Math.random() < 0.02) {
     document.body.style.opacity = "0.92";
     setTimeout(() => (document.body.style.opacity = "1"), 120);
   }
 
-  // ===== PRESSURE BASELINE =====
+  // ===== Pressure baseline + scroll reaction =====
   setPressure("STABLE");
 
   let scrollTimer = null;
@@ -86,15 +86,19 @@ document.addEventListener("DOMContentLoaded", () => {
     scrollTimer = setTimeout(() => setPressure("STABLE"), 900);
   }, { passive: true });
 
-  // ===== 5 TAP MEMBERS REVEAL =====
+  // ===== Members reveal (5 taps within 3s) =====
+  const REVEAL_KEY = "zeros_members_revealed";
   let taps = 0;
   let tapTimer = null;
 
   function revealMembers(){
-    membersSection?.classList.remove("hidden");
+    if (!membersSection) return;
+    membersSection.classList.remove("hidden");
+    sessionStorage.setItem(REVEAL_KEY, "1");
     showToast("Members unlocked.");
-    setTimeout(() => membersSection?.scrollIntoView({ behavior: "smooth" }), 150);
     setPressure("ELEVATED");
+    setTimeout(() => membersSection.scrollIntoView({ behavior: "smooth", block: "start" }), 150);
+    setTimeout(() => passInput?.focus(), 400);
   }
 
   function registerTap(){
@@ -107,24 +111,36 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
 
-  logoTrigger?.addEventListener("pointerup", (e) => {
-    e.preventDefault();
-    registerTap();
-  });
+  // keep revealed for session
+  if (sessionStorage.getItem(REVEAL_KEY) === "1") {
+    membersSection?.classList.remove("hidden");
+  }
 
-  logoTrigger?.addEventListener("touchend", (e) => {
-    e.preventDefault();
-    registerTap();
-  }, { passive: false });
+  // iOS-friendly events
+  if (logoTrigger) {
+    logoTrigger.addEventListener("pointerup", (e) => {
+      e.preventDefault();
+      registerTap();
+    });
 
-  // ===== LOCKED UI =====
+    logoTrigger.addEventListener("touchend", (e) => {
+      e.preventDefault();
+      registerTap();
+    }, { passive: false });
+  }
+
+  // ===== Locked/Unlocked UI =====
   function setLockedUI(){
     if (numberEl) numberEl.textContent = "••• ••• ••••";
     if (copyBtn) copyBtn.disabled = true;
+
     if (smsLink) {
       smsLink.classList.add("disabled");
+      smsLink.setAttribute("aria-disabled", "true");
       smsLink.href = "#";
     }
+
+    if (copyMsg) copyMsg.textContent = "";
   }
 
   function setUnlockedUI(){
@@ -133,8 +149,10 @@ document.addEventListener("DOMContentLoaded", () => {
 
     if (numberEl) numberEl.textContent = MEMBERS_NUMBER;
     if (copyBtn) copyBtn.disabled = false;
+
     if (smsLink) {
       smsLink.classList.remove("disabled");
+      smsLink.removeAttribute("aria-disabled");
       smsLink.href = `sms:${encodeURIComponent(MEMBERS_NUMBER)}`;
     }
 
@@ -144,9 +162,10 @@ document.addEventListener("DOMContentLoaded", () => {
 
   setLockedUI();
 
-  // ===== TYPING AWARENESS =====
-  let typingTimer;
+  // ===== Typing awareness =====
+  let typingTimer = null;
   passInput?.addEventListener("focus", () => {
+    clearTimeout(typingTimer);
     typingTimer = setTimeout(() => {
       if (gateMsg) gateMsg.textContent = "Proceed when ready.";
       setPressure("MONITORED");
@@ -156,9 +175,9 @@ document.addEventListener("DOMContentLoaded", () => {
   passInput?.addEventListener("input", () => clearTimeout(typingTimer));
   passInput?.addEventListener("blur", () => clearTimeout(typingTimer));
 
-  // ===== GLITCH SEQUENCE =====
+  // ===== Glitch overlay (force visible) =====
   function triggerGlitch(){
-    window.scrollTo({ top: 0 });
+    window.scrollTo({ top: 0, behavior: "instant" });
     document.body.style.overflow = "hidden";
 
     const overlay = document.createElement("div");
@@ -186,39 +205,45 @@ document.addEventListener("DOMContentLoaded", () => {
     setTimeout(() => {
       overlay.remove();
       document.body.style.overflow = "";
+      if (gateMsg) gateMsg.textContent = "";
       wrongAttempts = 0;
       setPressure("DENIED");
     }, 1800);
   }
 
-  // ===== PASSWORD LOGIC =====
+  // ===== Password logic =====
+  let wrongAttempts = 0;
+
   function unlockAttempt(){
     const attempt = normalize(passInput?.value);
 
     if (!attempt) {
-      gateMsg.textContent = "Enter the password.";
+      if (gateMsg) gateMsg.textContent = "Enter the password.";
       return;
     }
 
     if (attempt === MEMBER_PASSWORD) {
       wrongAttempts = 0;
-      gateMsg.textContent = "";
+      if (gateMsg) gateMsg.textContent = "";
       setUnlockedUI();
       return;
     }
 
     wrongAttempts++;
-
-    if (wrongAttempts === 1) gateMsg.textContent = "WRONG PASSWORD.";
-    else if (wrongAttempts === 2) gateMsg.textContent = "Bro.";
-    else if (wrongAttempts === 3) gateMsg.textContent = "You serious?";
-    else if (wrongAttempts === 4) gateMsg.textContent = "This isn't a guessing game.";
-    else if (wrongAttempts >= 5) triggerGlitch();
-
     setPressure(wrongAttempts >= 3 ? "MONITORED" : "ELEVATED");
 
-    passInput.value = "";
-    passInput.focus();
+    if (gateMsg) {
+      if (wrongAttempts === 1) gateMsg.textContent = "WRONG PASSWORD.";
+      else if (wrongAttempts === 2) gateMsg.textContent = "Bro.";
+      else if (wrongAttempts === 3) gateMsg.textContent = "You serious?";
+      else if (wrongAttempts === 4) gateMsg.textContent = "This isn't a guessing game.";
+      else if (wrongAttempts >= 5) triggerGlitch();
+    }
+
+    if (passInput) {
+      passInput.value = "";
+      passInput.focus();
+    }
   }
 
   unlockBtn?.addEventListener("click", unlockAttempt);
@@ -226,28 +251,39 @@ document.addEventListener("DOMContentLoaded", () => {
     if (e.key === "Enter") unlockAttempt();
   });
 
-  // ===== COPY =====
+  // ===== Copy (guarded) =====
   copyBtn?.addEventListener("click", async () => {
-    if (copyBtn.disabled) return;
-    await navigator.clipboard.writeText(MEMBERS_NUMBER);
-    copyMsg.textContent = "Copied.";
-    setTimeout(() => (copyMsg.textContent = ""), 1500);
+    if (!copyBtn || copyBtn.disabled) return;
+
+    try {
+      await navigator.clipboard.writeText(MEMBERS_NUMBER);
+      if (copyMsg) copyMsg.textContent = "Copied.";
+      setTimeout(() => { if (copyMsg) copyMsg.textContent = ""; }, 1500);
+    } catch {
+      const ta = document.createElement("textarea");
+      ta.value = MEMBERS_NUMBER;
+      document.body.appendChild(ta);
+      ta.select();
+      document.execCommand("copy");
+      document.body.removeChild(ta);
+      if (copyMsg) copyMsg.textContent = "Copied.";
+      setTimeout(() => { if (copyMsg) copyMsg.textContent = ""; }, 1500);
+    }
   });
 
-  // ===== LEAF RAIN =====
-  const leafContainer = document.querySelector(".leaf-rain");
+  // ===== Leaf rain generator =====
   if (leafContainer) {
-    const leafCount = 25;
+    const leafCount = 26;
 
     for (let i = 0; i < leafCount; i++) {
       const leaf = document.createElement("div");
       leaf.className = "leaf";
       leaf.textContent = "🍃";
 
-      leaf.style.left = Math.random() * 100 + "vw";
-      leaf.style.animationDuration = (8 + Math.random() * 12) + "s";
-      leaf.style.animationDelay = Math.random() * 10 + "s";
-      leaf.style.fontSize = (16 + Math.random() * 20) + "px";
+      leaf.style.left = (Math.random() * 100) + "vw";
+      leaf.style.animationDuration = (9 + Math.random() * 12) + "s";
+      leaf.style.animationDelay = (Math.random() * 8) + "s";
+      leaf.style.fontSize = (16 + Math.random() * 18) + "px";
 
       leafContainer.appendChild(leaf);
     }
