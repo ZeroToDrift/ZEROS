@@ -62,6 +62,7 @@ document.addEventListener("DOMContentLoaded", () => {
     registerTap();
   }, { passive: false });
 
+  // ---- Locked UI ----
   function setLockedUI(){
     numberEl.textContent = "••• ••• ••••";
     copyBtn.disabled = true;
@@ -72,7 +73,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
   setLockedUI();
 
-  function dramaticUnlock(){
+  // ---- Unlock UI ----
+  function setUnlockedUI(){
     gate.classList.add("hidden");
     memberContent.classList.remove("hidden");
 
@@ -86,8 +88,14 @@ document.addEventListener("DOMContentLoaded", () => {
     showToast("Access granted.");
   }
 
-  // ===== GLITCH SEQUENCE =====
+  // ===== GLITCH SEQUENCE (FORCE VISIBLE) =====
   function triggerGlitch(){
+    // Jump to top so it can't be missed
+    window.scrollTo({ top: 0, behavior: "instant" });
+
+    // Lock scroll
+    document.body.style.overflow = "hidden";
+
     const overlay = document.createElement("div");
     overlay.className = "glitch-overlay";
 
@@ -98,18 +106,28 @@ document.addEventListener("DOMContentLoaded", () => {
     overlay.appendChild(text);
     document.body.appendChild(overlay);
 
-    // Shake effect
-    document.body.style.transform = "translateX(5px)";
-    setTimeout(() => document.body.style.transform = "translateX(-5px)", 50);
-    setTimeout(() => document.body.style.transform = "translateX(0px)", 100);
+    // Strong shake
+    let shakeCount = 0;
+    const shakeInterval = setInterval(() => {
+      const x = (Math.random() - 0.5) * 20;
+      const y = (Math.random() - 0.5) * 20;
+      document.body.style.transform = `translate(${x}px, ${y}px)`;
+      shakeCount++;
+      if (shakeCount > 10) {
+        clearInterval(shakeInterval);
+        document.body.style.transform = "translate(0,0)";
+      }
+    }, 40);
 
     setTimeout(() => {
       overlay.remove();
+      document.body.style.overflow = "";
       wrongAttempts = 0;
       gateMsg.textContent = "";
-    }, 1500);
+    }, 1800);
   }
 
+  // ---- Password handler ----
   function unlock(){
     const attempt = normalize(passInput.value);
 
@@ -121,7 +139,7 @@ document.addEventListener("DOMContentLoaded", () => {
     if (attempt === MEMBER_PASSWORD) {
       wrongAttempts = 0;
       gateMsg.textContent = "";
-      dramaticUnlock();
+      setUnlockedUI();
     } else {
       wrongAttempts++;
 
@@ -141,6 +159,7 @@ document.addEventListener("DOMContentLoaded", () => {
     if (e.key === "Enter") unlock();
   });
 
+  // ---- Copy ----
   copyBtn.addEventListener("click", async () => {
     if (copyBtn.disabled) {
       copyMsg.textContent = "Locked.";
@@ -148,8 +167,19 @@ document.addEventListener("DOMContentLoaded", () => {
       return;
     }
 
-    await navigator.clipboard.writeText(MEMBERS_NUMBER);
-    copyMsg.textContent = "Copied.";
-    setTimeout(() => (copyMsg.textContent = ""), 1500);
+    try {
+      await navigator.clipboard.writeText(MEMBERS_NUMBER);
+      copyMsg.textContent = "Copied.";
+      setTimeout(() => (copyMsg.textContent = ""), 1500);
+    } catch {
+      const ta = document.createElement("textarea");
+      ta.value = MEMBERS_NUMBER;
+      document.body.appendChild(ta);
+      ta.select();
+      document.execCommand("copy");
+      document.body.removeChild(ta);
+      copyMsg.textContent = "Copied.";
+      setTimeout(() => (copyMsg.textContent = ""), 1500);
+    }
   });
 });
