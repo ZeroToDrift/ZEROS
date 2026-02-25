@@ -13,18 +13,21 @@
 </head>
 
 <body>
-  <div class="leaf-rain"></div>
+  <!-- Leaf rain layer -->
+  <div class="leaf-rain" aria-hidden="true"></div>
+
   <div class="site-bg">
     <main class="container">
 
       <!-- Toast -->
-      <div id="toast" class="toast hidden"></div>
+      <div id="toast" class="toast hidden" aria-live="polite"></div>
 
       <!-- ===== PUBLIC ===== -->
       <section id="public">
         <header class="hero">
           <div class="kicker">PRESSURE SEASON</div>
 
+          <!-- 5 taps reveals Members -->
           <h1 class="logo no-zoom"
               id="logoTrigger"
               role="button"
@@ -33,8 +36,10 @@
           </h1>
 
           <p class="tagline" id="taglineText">Fast. Discreet. Licensed.</p>
-<p class="pressure" id="pressureLevel">PRESSURE LEVEL: STABLE</p>
-<p class="cult" id="cultLine"></p>
+
+          <!-- Always watching UI -->
+          <p class="pressure" id="pressureLevel">PRESSURE LEVEL: STABLE</p>
+          <p class="cult" id="cultLine"></p>
         </header>
 
         <section class="card">
@@ -80,7 +85,6 @@
         </header>
 
         <section class="card">
-
           <div id="gate" class="gate">
             <label class="label" for="memberPass">Password</label>
 
@@ -113,15 +117,13 @@
 
             <p id="copyMsg" class="helper"></p>
           </div>
-
         </section>
       </section>
 
     </main>
   </div>
 
-<script src="script.js?v=12"></script>
+  <!-- Cache-busted to beat iPhone/GitHub Pages caching -->
+  <script src="script.js?v=99"></script>
 </body>
-  <body>
-  <div class="leaf-rain"></div>
 </html>
