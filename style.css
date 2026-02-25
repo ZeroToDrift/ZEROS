@@ -14,13 +14,13 @@ body{
   overflow-x:hidden;
 }
 
-/* ===== Pot leaf rain layer ===== */
+/* ===== POT LEAF RAIN LAYER ===== */
 .leaf-rain{
   pointer-events:none;
   position:fixed;
   inset:0;
   overflow:hidden;
-  z-index:0;
+  z-index:2; /* ABOVE background */
 }
 
 .leaf{
@@ -28,28 +28,42 @@ body{
   top:-30vh;
   width:18px;
   height:18px;
-  opacity:0.12;
-  background-size:contain;
-  background-repeat:no-repeat;
-  background-position:center;
-  filter: drop-shadow(0 0 10px rgba(60,255,132,0.10));
+  opacity:0.18; /* temporarily higher so you SEE them */
   animation: fall linear infinite;
   will-change: transform;
 }
 
 @keyframes fall{
-  0%   { transform: translate3d(0,-30vh,0) rotate(0deg); }
-  100% { transform: translate3d(var(--drift, 40px),120vh,0) rotate(var(--spin, 360deg)); }
+  0%{
+    transform: translate3d(0,-30vh,0) rotate(0deg);
+  }
+  100%{
+    transform: translate3d(var(--drift, 40px),120vh,0) rotate(var(--spin, 360deg));
+  }
 }
 
-/* ===== Background ===== */
+/* SVG inside each leaf */
+.leaf-svg{
+  width:100%;
+  height:100%;
+  display:block;
+  color:#3cff84;
+}
+
+.after-dark .leaf-svg{
+  color:#ff3c6f;
+}
+
+/* ===== BACKGROUND LAYER ===== */
 .site-bg{
   min-height:100vh;
+
   background-image:
     linear-gradient(180deg, rgba(0,0,0,0.78), rgba(0,0,0,0.68)),
     radial-gradient(circle at 50% 30%, rgba(60,255,132,0.35), transparent 60%),
     radial-gradient(circle at 50% 70%, rgba(176,107,255,0.18), transparent 70%),
     url("1919B37D-65D2-4E03-9227-57B6B96BCD69.png");
+
   background-size:cover;
   background-position:center;
   background-repeat:no-repeat;
@@ -63,13 +77,19 @@ body{
   text-align:center;
 
   position:relative;
-  z-index:1; /* keeps content above rain */
+  z-index:1; /* BELOW leaves */
   filter:brightness(1.15) saturate(1.2);
 }
 
-.container{ width:100%; max-width:480px; }
+/* Content ABOVE leaves */
+.container{
+  position:relative;
+  z-index:3;
+  width:100%;
+  max-width:480px;
+}
 
-/* Toast */
+/* ===== Toast ===== */
 .toast{
   position:fixed;
   top:18px;
@@ -85,7 +105,7 @@ body{
 }
 .hidden{ display:none !important; }
 
-/* Hero */
+/* ===== HERO ===== */
 .kicker{
   display:inline-flex;
   padding:8px 18px;
@@ -118,9 +138,17 @@ body{
   touch-action:manipulation;
 }
 
-.tm{ font-size:16px; vertical-align:super; margin-left:4px; }
+.tm{
+  font-size:16px;
+  vertical-align:super;
+  margin-left:4px;
+}
 
-.tagline{ margin-top:12px; font-size:18px; opacity:0.85; }
+.tagline{
+  margin-top:12px;
+  font-size:18px;
+  opacity:0.85;
+}
 
 .pressure{
   margin-top:10px;
@@ -128,13 +156,14 @@ body{
   letter-spacing:2px;
   opacity:0.85;
 }
+
 .cult{
   margin-top:6px;
   font-size:12px;
   opacity:0.65;
 }
 
-/* Card */
+/* ===== CARD ===== */
 .card{
   padding:24px;
   border-radius:20px;
@@ -146,10 +175,20 @@ body{
   box-shadow: 0 20px 60px rgba(0,0,0,0.65);
 }
 
-.helper{ margin:10px 0 0; font-size:14px; opacity:0.75; }
-.fineprint{ margin:16px 0 0; font-size:12px; opacity:0.55; line-height:1.35; }
+.helper{
+  margin:10px 0 0;
+  font-size:14px;
+  opacity:0.75;
+}
 
-/* Buttons */
+.fineprint{
+  margin:16px 0 0;
+  font-size:12px;
+  opacity:0.55;
+  line-height:1.35;
+}
+
+/* ===== BUTTONS ===== */
 .btn{
   display:block;
   width:100%;
@@ -164,17 +203,29 @@ body{
   border:1px solid rgba(255,255,255,0.18);
   transition: transform .15s ease;
 }
-.btn:hover{ transform: translateY(-2px); }
+
+.btn:hover{
+  transform: translateY(-2px);
+}
 
 .btn.primary{
   background: linear-gradient(90deg, #1fd86f, #3cff84);
   border:1px solid rgba(60,255,132,0.60);
 }
 
-.btn.small{ width:auto; margin:0; padding:14px 16px; white-space:nowrap; }
-.disabled{ pointer-events:none; opacity:0.55; }
+.btn.small{
+  width:auto;
+  margin:0;
+  padding:14px 16px;
+  white-space:nowrap;
+}
 
-/* Footer */
+.disabled{
+  pointer-events:none;
+  opacity:0.55;
+}
+
+/* ===== FOOTER ===== */
 .footer{
   margin-top:22px;
   padding-bottom:16px;
@@ -185,26 +236,39 @@ body{
   font-size:13px;
   opacity:0.8;
 }
+
 .dot{
-  width:9px; height:9px;
+  width:9px;
+  height:9px;
   border-radius:50%;
   background:var(--neonStrong);
   box-shadow:0 0 15px var(--neonStrong);
 }
+
 .footer-link{
   text-decoration:none;
   color:rgba(255,255,255,0.92);
   font-weight:700;
 }
+
 .footer-link:hover{
-  text-shadow: 0 0 10px rgba(60,255,132,0.55), 0 0 25px rgba(60,255,132,0.35);
+  text-shadow: 0 0 10px rgba(60,255,132,0.55),
+               0 0 25px rgba(60,255,132,0.35);
 }
 
-/* Members */
+/* ===== MEMBERS ===== */
 .members-wrap{ margin-top:26px; }
 .members-title{ margin:0; font-size:28px; font-weight:800; }
+
 .row{ display:flex; gap:12px; align-items:center; }
-.label{ display:block; margin-bottom:10px; font-weight:700; opacity:0.9; }
+
+.label{
+  display:block;
+  margin-bottom:10px;
+  font-weight:700;
+  opacity:0.9;
+}
+
 .input{
   flex:1;
   padding:14px;
@@ -215,7 +279,12 @@ body{
   font-size:16px;
   outline:none;
 }
-.member-label{ font-weight:800; margin-top:10px; }
+
+.member-label{
+  font-weight:800;
+  margin-top:10px;
+}
+
 .member-number{
   font-size:22px;
   font-weight:900;
@@ -226,45 +295,22 @@ body{
   background:rgba(0,0,0,0.18);
 }
 
-/* After dark */
-.after-dark .site-bg{ filter:brightness(0.75) saturate(1.1); }
+/* ===== AFTER DARK ===== */
+.after-dark .site-bg{
+  filter:brightness(0.75) saturate(1.1);
+}
+
 .after-dark .logo{
-  text-shadow: 0 0 10px #ff3c6f, 0 0 25px #ff3c6f, 0 0 55px rgba(255,60,111,0.35);
+  text-shadow:
+    0 0 10px #ff3c6f,
+    0 0 25px #ff3c6f,
+    0 0 55px rgba(255,60,111,0.35);
 }
-.after-dark .pressure{ color:#ff3c6f; }
-.after-dark .leaf{ opacity:0.08; filter: drop-shadow(0 0 12px rgba(255,60,111,0.14)); }
 
-/* Glitch overlay */
-.glitch-overlay{
-  position:fixed;
-  inset:0;
-  background: rgba(120,0,0,0.95);
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  z-index:9999;
-  animation: flicker 0.15s infinite alternate;
+.after-dark .pressure{
+  color:#ff3c6f;
 }
-.glitch-text{
-  font-size:42px;
-  font-weight:900;
-  letter-spacing:4px;
-  color:white;
-  text-shadow: 2px 0 red, -2px 0 cyan, 0 0 20px white;
-}
-@keyframes flicker{ from{opacity:0.85;} to{opacity:1;} }
 
-/* iOS fixed bg helper */
-@supports (-webkit-touch-callout: none){
-  .site-bg{ background-attachment: scroll; }
-}
-/* Pot leaf SVG inside each falling leaf */
-.leaf-svg{
-  width:100%;
-  height:100%;
-  display:block;
-  color:#3cff84; /* neon */
-}
-.after-dark .leaf-svg{
-  color:#ff3c6f; /* after-dark neon */
+.after-dark .leaf{
+  opacity:0.10;
 }
