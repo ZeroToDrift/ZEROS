@@ -2,9 +2,10 @@ document.addEventListener("DOMContentLoaded", () => {
   const MEMBER_PASSWORD = "BigJigglyBalls";
   const MEMBERS_NUMBER = "(646) 332-9902";
 
-  const logoTrigger = document.getElementById("logoTrigger");
-  const membersSection = document.getElementById("members");
   const toast = document.getElementById("toast");
+
+  const membersSection = document.getElementById("members");
+  const logoTrigger = document.getElementById("logoTrigger");
 
   const gate = document.getElementById("gate");
   const memberContent = document.getElementById("memberContent");
@@ -18,6 +19,9 @@ document.addEventListener("DOMContentLoaded", () => {
   const copyMsg = document.getElementById("copyMsg");
   const smsLink = document.getElementById("smsLink");
 
+  // Visible proof the NEW script loaded
+  if (gateMsg) gateMsg.textContent = "JS LOADED ✅";
+
   function showToast(msg){
     if (!toast) return;
     toast.textContent = msg;
@@ -29,16 +33,15 @@ document.addEventListener("DOMContentLoaded", () => {
     return (str || "").normalize("NFKC").trim();
   }
 
-  // ---- Stealth reveal (5 taps in 3s) ----
+  // --- Reveal members (5 taps in 3 sec) ---
   let taps = 0;
   let timer = null;
 
   function revealMembers(){
-    if (!membersSection) return;
-    membersSection.classList.remove("hidden");
+    membersSection?.classList.remove("hidden");
     showToast("Members unlocked");
-    setTimeout(() => membersSection.scrollIntoView({ behavior: "smooth" }), 150);
-    setTimeout(() => passInput?.focus(), 400);
+    setTimeout(() => membersSection?.scrollIntoView({ behavior: "smooth" }), 150);
+    setTimeout(() => passInput?.focus(), 350);
   }
 
   function registerTap(){
@@ -61,43 +64,37 @@ document.addEventListener("DOMContentLoaded", () => {
     registerTap();
   }, { passive: false });
 
-  // ---- Locked state at load ----
+  // --- Locked UI on load ---
   function setLockedUI(){
-    if (numberEl) numberEl.textContent = "••• ••• ••••";
-    if (copyBtn) copyBtn.disabled = true;
-    if (smsLink) {
-      smsLink.classList.add("disabled");
-      smsLink.setAttribute("aria-disabled", "true");
-      smsLink.href = "#";
-    }
-    if (copyMsg) copyMsg.textContent = "";
+    numberEl.textContent = "••• ••• ••••";
+    copyBtn.disabled = true;
+
+    smsLink.classList.add("disabled");
+    smsLink.setAttribute("aria-disabled", "true");
+    smsLink.href = "#";
+
+    copyMsg.textContent = "";
   }
 
-  // ---- Unlock UI (THIS is what you were missing) ----
+  // --- Unlock UI (THIS is the important part) ---
   function setUnlockedUI(){
-    // Show member content and hide gate
-    gate?.classList.add("hidden");
-    memberContent?.classList.remove("hidden");
+    gate.classList.add("hidden");
+    memberContent.classList.remove("hidden");
 
-    // Fill number + enable actions
-    if (numberEl) numberEl.textContent = MEMBERS_NUMBER;
+    numberEl.textContent = MEMBERS_NUMBER;
+    copyBtn.disabled = false;
 
-    if (copyBtn) copyBtn.disabled = false;
-
-    if (smsLink) {
-      smsLink.classList.remove("disabled");
-      smsLink.removeAttribute("aria-disabled");
-      smsLink.href = `sms:${encodeURIComponent(MEMBERS_NUMBER)}`;
-    }
+    smsLink.classList.remove("disabled");
+    smsLink.removeAttribute("aria-disabled");
+    smsLink.href = `sms:${encodeURIComponent(MEMBERS_NUMBER)}`;
 
     showToast("Access granted");
   }
 
   setLockedUI();
 
-  // ---- Password handler ----
   function unlock(){
-    const attempt = normalize(passInput?.value);
+    const attempt = normalize(passInput.value);
 
     if (!attempt) {
       gateMsg.textContent = "Enter the password.";
@@ -108,19 +105,18 @@ document.addEventListener("DOMContentLoaded", () => {
       gateMsg.textContent = "";
       setUnlockedUI();
     } else {
-      gateMsg.textContent = "YOU SUCK DUDE.";
+      gateMsg.textContent = "WRONG PASSWORD.";
       passInput.value = "";
       passInput.focus();
     }
   }
 
-  unlockBtn?.addEventListener("click", unlock);
-  passInput?.addEventListener("keydown", (e) => {
+  unlockBtn.addEventListener("click", unlock);
+  passInput.addEventListener("keydown", (e) => {
     if (e.key === "Enter") unlock();
   });
 
-  // ---- Copy (only works after unlock) ----
-  copyBtn?.addEventListener("click", async () => {
+  copyBtn.addEventListener("click", async () => {
     if (copyBtn.disabled) {
       copyMsg.textContent = "Locked.";
       setTimeout(() => (copyMsg.textContent = ""), 1200);
