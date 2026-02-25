@@ -1,4 +1,4 @@
-<<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
@@ -16,15 +16,8 @@
   <div class="site-bg">
     <main class="container">
 
-      <!-- ===== Tabs ===== -->
-      <nav class="tabs">
-        <button class="tab active" data-tab="public" type="button">Public</button>
-        <button class="tab" data-tab="members" type="button">Members</button>
-      </nav>
-
-      <!-- ===== PUBLIC TAB ===== -->
-      <section id="tab-public" class="tab-panel active">
-
+      <!-- ===== PUBLIC ===== -->
+      <section id="public">
         <header class="hero">
           <div class="kicker">PRESSURE SEASON</div>
           <h1 class="logo">ZEROS<span class="tm">™</span></h1>
@@ -55,56 +48,51 @@
           <span class="sep">•</span>
           <span class="muted">No weird shit. Just quality.</span>
         </footer>
-
       </section>
 
-      <!-- ===== MEMBERS TAB ===== -->
-      <section id="tab-members" class="tab-panel">
-
+      <!-- ===== MEMBERS (scroll down) ===== -->
+      <section id="members" class="members-wrap">
         <header class="hero">
           <div class="kicker">MEMBERS ONLY</div>
           <h2 class="members-title">Private Access</h2>
-          <p class="tagline">Enter the password to unlock the burner line.</p>
+          <p class="tagline">Enter the password to unlock the members line.</p>
         </header>
 
         <section class="card">
 
           <!-- Password Gate -->
-          <div id="gate">
+          <div id="gate" class="gate">
             <label class="label" for="memberPass">Password</label>
+
             <div class="row">
               <input id="memberPass" class="input" type="password" placeholder="Enter password" autocomplete="off" />
               <button id="unlockBtn" class="btn small primary" type="button">Unlock</button>
             </div>
-            <p id="gateMsg" class="helper"></p>
+
+            <p id="gateMsg" class="helper" style="margin: 10px 0 0;"></p>
           </div>
 
           <!-- Hidden Content -->
-          <div id="memberContent" class="hidden">
-
+          <div id="memberContent" class="member-content hidden">
             <div class="member-box">
-              <div class="member-label">Burner Phone</div>
+              <div class="member-label">Members Line</div>
 
-              <div id="burnerNumber" class="member-number">
-                ••• ••• ••••
-              </div>
+              <div id="burnerNumber" class="member-number">••• ••• ••••</div>
 
               <div class="row" style="margin-top: 14px;">
                 <button id="copyBtn" class="btn primary" type="button">Copy Number</button>
                 <a id="smsLink" class="btn" href="#">Text</a>
               </div>
 
-              <p id="copyMsg" class="helper"></p>
+              <p id="copyMsg" class="helper" style="margin: 12px 0 0;"></p>
 
               <p class="fineprint" style="margin-top:12px;">
                 Keep this private. If it leaks, it gets rotated.
               </p>
             </div>
-
           </div>
 
         </section>
-
       </section>
 
     </main>
