@@ -4,7 +4,7 @@
    ========================= */
 
 const PASSWORD = "BigJigglyBalls";
-const MEMBER_LINE = "646 332-9902";
+const MEMBER_LINE = "(646) 444-4277";
 
 // Press & hold config
 const HOLD_MS = 700;
