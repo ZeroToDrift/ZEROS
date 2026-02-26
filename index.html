@@ -1,112 +1,150 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <title>ZEROS™</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;600;700&display=swap" rel="stylesheet">
-
-  <link rel="stylesheet" href="style.css?v=3100" />
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>ZEROS — Pressure Season</title>
+  <link rel="stylesheet" href="style.css" />
 </head>
 
 <body>
-  <div class="site-bg">
-    <!-- Leaves above background, below content -->
-    <div class="leaf-rain" aria-hidden="true"></div>
+  <!-- Background -->
+  <div class="bg"></div>
 
-    <main class="container">
-      <!-- Toast -->
-      <div id="toast" class="toast hidden" aria-live="polite"></div>
-
-      <!-- ===== PUBLIC ===== -->
-      <section id="public">
-        <header class="hero">
-          <div class="kicker">PRESSURE SEASON</div>
-
-          <!-- Press & hold reveals Members -->
-          <h1 class="logo no-zoom" id="logoTrigger" role="button" tabindex="0">
-            ZEROS<span class="tm">™</span>
-          </h1>
-
-          <p class="tagline" id="taglineText">Fast. Discreet. Licensed.</p>
-
-          <p class="pressure" id="pressureLevel">PRESSURE LEVEL: STABLE</p>
-          <p class="cult" id="cultLine"></p>
-        </header>
-
-        <section class="card">
-          <a class="btn primary" href="https://t.me/+PNco3ZIElZBjODBh" target="_blank" rel="noopener">
-            View Full Menu on Telegram
-          </a>
-
-          <div class="helper">For menu + ordering, use Telegram.</div>
-
-          <a class="btn" href="https://instagram.com/zero2drift" target="_blank" rel="noopener">
-            Business / Inquiries → Instagram DM @zero2drift
-          </a>
-
-          <p class="fineprint">By messaging, you confirm you are of legal age in your area.</p>
-        </section>
-
-        <footer class="footer">
-          <span class="dot"></span>
-          <a class="footer-strong footer-link"
-             href="https://youtu.be/dQw4w9WgXcQ?si=k6fLU03Dcl_gIcvY"
-             target="_blank" rel="noopener">ZEROS™</a>
-          <span class="sep">•</span>
-          <span class="muted">No weird shit. Just quality.</span>
-        </footer>
-      </section>
-
-      <!-- ===== MEMBERS (Hidden until press & hold) ===== -->
-      <section id="members" class="members-wrap hidden">
-        <header class="hero" style="margin-top:22px;">
-          <div class="kicker">MEMBERS ONLY</div>
-          <h2 class="members-title">Private Access</h2>
-          <p class="tagline">Enter the password to unlock the members line.</p>
-        </header>
-
-        <section class="card">
-          <div id="gate" class="gate">
-            <label class="label" for="memberPass">Password</label>
-
-            <div class="row">
-              <input
-                id="memberPass"
-                class="input"
-                type="password"
-                placeholder="Enter password"
-                autocomplete="off"
-                autocapitalize="none"
-                autocorrect="off"
-                spellcheck="false"
-              />
-              <button id="unlockBtn" class="btn small primary" type="button">Unlock</button>
-            </div>
-
-            <p id="gateMsg" class="helper"></p>
-          </div>
-
-          <div id="memberContent" class="hidden">
-            <div class="member-label">Members Line</div>
-            <div id="burnerNumber" class="member-number">••• ••• ••••</div>
-
-            <div class="row" style="margin-top: 14px;">
-              <button id="copyBtn" class="btn primary" type="button" disabled>Copy Number</button>
-              <a id="smsLink" class="btn disabled" href="#" aria-disabled="true">Text</a>
-            </div>
-
-            <p id="copyMsg" class="helper"></p>
-          </div>
-        </section>
-      </section>
-
-    </main>
+  <!-- Pot-leaf rain layer (above bg, below content) -->
+  <div class="leaf-layer" aria-hidden="true">
+    <svg id="leafSvg" width="0" height="0" style="position:absolute">
+      <defs>
+        <!-- simple pot-leaf-ish icon -->
+        <symbol id="leafIcon" viewBox="0 0 64 64">
+          <path d="M32 6c2 8 1 14-1 18 4-4 10-7 18-8-4 7-9 11-14 13 6 0 12 2 17 7-7 2-13 2-18 1 4 4 7 10 8 18-7-4-11-9-13-14 0 6-2 12-7 17-2-7-2-13-1-18-4 4-10 7-18 8 4-7 9-11 14-13-6 0-12-2-17-7 7-2 13-2 18-1-4-4-7-10-8-18 7 4 11 9 13 14z"/>
+        </symbol>
+      </defs>
+    </svg>
+    <div id="leafRain"></div>
   </div>
 
-  <script src="script.js?v=3100"></script>
+  <!-- Toast -->
+  <div id="toast" class="toast" role="status" aria-live="polite">JS ONLINE</div>
+
+  <!-- Main -->
+  <main class="wrap">
+    <header class="top">
+      <div class="brand">
+        <!-- Press & hold this -->
+        <button id="zerosLogo" class="logo" type="button" aria-label="ZEROS (press and hold)">
+          <span class="logo__glow">ZEROS</span>
+          <span class="logo__sub">PRESSURE SEASON</span>
+        </button>
+      </div>
+
+      <div class="tagline">
+        <div class="tagline__pill">Free delivery $40+</div>
+        <div class="tagline__pill">Shop Hours: 12PM – 10PM</div>
+      </div>
+    </header>
+
+    <section class="panel">
+      <h1 class="h1">ZEROS MENU</h1>
+      <p class="muted">Tap and browse. Members get the real-time catalog.</p>
+
+      <div class="grid">
+        <div class="card">
+          <div class="card__title">Flower</div>
+          <div class="card__body">
+            <div class="row"><span>RUNTZ</span><span>3.5g $30 • 7g $55 • 14g $100 • OZ $180</span></div>
+            <div class="row"><span>Lemon Cherry Gumbo</span><span>3.5g $25 • 7g $50 • 14g $90 • OZ $160</span></div>
+            <div class="row"><span>Bulk</span><span>2oz $340 • QP $700 • HP $1250 • LB $1800</span></div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card__title">Disposables</div>
+          <div class="card__body">
+            <div class="row"><span>Smoothie Bar</span><span>2g $40 (1 left)</span></div>
+            <div class="row"><span>BOUTIQ SWITCH V5</span><span>Triple Tank 2G $45</span></div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card__title">Concentrates</div>
+          <div class="card__body">
+            <div class="row"><span>Lemon Skunk — Live Resin</span><span>1g $25 • 2g $45 • 3.5g $80 • 7g $150</span></div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card__title">Accessories</div>
+          <div class="card__body">
+            <div class="row"><span>Empire Papers</span><span>$3 • 5-pack $12</span></div>
+            <div class="row"><span>Rolling Trays</span><span>$10</span></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="note">
+        <div class="note__title">Bundles</div>
+        <div class="note__body">
+          <div class="row"><span>Budget</span><span>$50</span></div>
+          <div class="row"><span>Mid</span><span>$100</span></div>
+          <div class="row"><span>Premium</span><span>$160</span></div>
+          <div class="row"><span>Starter Fade</span><span>$60</span></div>
+          <div class="row"><span>Daily Driver</span><span>$80</span></div>
+          <div class="row"><span>Certified Fried</span><span>$150</span></div>
+        </div>
+      </div>
+    </section>
+
+    <footer class="footer">
+      <a class="footer__link" href="https://youtu.be/dQw4w9WgXcQ?si=k6fLU03Dcl_gIcvY" target="_blank" rel="noopener noreferrer">ZEROS™</a>
+      <span class="footer__sep">•</span>
+      <span class="footer__muted">Pressure Season</span>
+    </footer>
+  </main>
+
+  <!-- Members Overlay -->
+  <div id="membersOverlay" class="overlay hidden" aria-hidden="true">
+    <div class="overlay__backdrop" data-close="1"></div>
+
+    <section class="members" role="dialog" aria-modal="true" aria-label="Members">
+      <div class="members__top">
+        <div class="members__title">
+          <span class="dot"></span>
+          <span>MEMBERS</span>
+        </div>
+        <button class="x" type="button" data-close="1" aria-label="Close">✕</button>
+      </div>
+
+      <div id="membersLocked" class="members__locked">
+        <p class="muted">Enter password to unlock the member line + live menu.</p>
+        <div class="pw">
+          <input id="pwInput" type="password" placeholder="Password" autocomplete="off" />
+          <button id="pwBtn" type="button" class="btn">Unlock</button>
+        </div>
+        <p id="pwMsg" class="pwMsg" aria-live="polite"></p>
+      </div>
+
+      <div id="membersUnlocked" class="members__unlocked hidden">
+        <div class="lineBox">
+          <div class="lineBox__label">Members Line</div>
+          <div class="lineBox__num" id="memberLine">646 332-9902</div>
+
+          <div class="lineBox__actions">
+            <button id="copyBtn" class="btn btn--ghost" type="button">Copy</button>
+            <a id="textBtn" class="btn" href="#" role="button">Text</a>
+          </div>
+        </div>
+
+        <!-- Live Menu gets INJECTED HERE ONLY after correct password -->
+        <div id="liveMenuMount"></div>
+
+        <div class="tiny muted">
+          Inventory can change fast. Members get first access.
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <script src="script.js"></script>
 </body>
 </html>
