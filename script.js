@@ -1,6 +1,7 @@
 document.addEventListener("DOMContentLoaded", () => {
   const MEMBER_PASSWORD = "BigJigglyBalls";
   const MEMBERS_NUMBER = "(646) 444-4277";
+  const MENU_JSON_PATH = "menu.json"; // <— you’ll edit this file for your items
 
   const logoTrigger = document.getElementById("logoTrigger");
   const membersSection = document.getElementById("members");
@@ -23,6 +24,20 @@ document.addEventListener("DOMContentLoaded", () => {
 
   const leafContainer = document.querySelector(".leaf-rain");
 
+  // Menu UI
+  const menuGrid = document.getElementById("menuGrid");
+  const menuStatus = document.getElementById("menuStatus");
+
+  // Menu manager UI
+  const mCat = document.getElementById("mCat");
+  const mName = document.getElementById("mName");
+  const mPrice = document.getElementById("mPrice");
+  const mDesc = document.getElementById("mDesc");
+  const mMedia = document.getElementById("mMedia");
+  const genItemBtn = document.getElementById("genItemBtn");
+  const copyItemBtn = document.getElementById("copyItemBtn");
+  const jsonOut = document.getElementById("jsonOut");
+
   let isUnlocked = false;
 
   function showToast(msg){
@@ -37,10 +52,10 @@ document.addEventListener("DOMContentLoaded", () => {
     pressureEl.textContent = `PRESSURE LEVEL: ${state}`;
   }
 
-  // Prove JS is running
+  // JS proof
   showToast("JS ONLINE");
 
-  // ===== Time theme (After Dark 10PM–5AM) =====
+  // After dark (10PM–5AM)
   const hour = new Date().getHours();
   const afterDark = (hour >= 22 || hour < 5);
   if (afterDark) {
@@ -48,23 +63,10 @@ document.addEventListener("DOMContentLoaded", () => {
     if (taglineEl) taglineEl.textContent = "After Hours Protocol Active.";
   }
 
-  // ===== Cult phrases =====
+  // Cult phrases
   const cultPhrases = afterDark
-    ? [
-        "We see you.",
-        "Keep your voice low.",
-        "You’re closer than you think.",
-        "Not everyone gets in.",
-        "You weren’t supposed to find this.",
-        "Don’t repeat what you learn here."
-      ]
-    : [
-        "Members move in silence.",
-        "Stay discreet.",
-        "Access is earned.",
-        "Not everyone gets in.",
-        "Say less."
-      ];
+    ? ["We see you.","Keep your voice low.","Not everyone gets in.","You weren’t supposed to find this."]
+    : ["Members move in silence.","Stay discreet.","Access is earned.","Say less."];
 
   function rotateCult(){
     if (!cultEl) return;
@@ -73,7 +75,7 @@ document.addEventListener("DOMContentLoaded", () => {
   rotateCult();
   setInterval(rotateCult, 9000);
 
-  // ===== Pressure behavior =====
+  // Pressure baseline + scroll
   setPressure("STABLE");
   let scrollTimer = null;
   window.addEventListener("scroll", () => {
@@ -82,7 +84,7 @@ document.addEventListener("DOMContentLoaded", () => {
     scrollTimer = setTimeout(() => setPressure("STABLE"), 900);
   }, { passive: true });
 
-  // ===== Members reveal (press & hold 1.2s) =====
+  // Members reveal: press & hold
   let holdTimer = null;
   let holding = false;
 
@@ -111,24 +113,24 @@ document.addEventListener("DOMContentLoaded", () => {
     logoTrigger.addEventListener("touchstart", startHold, { passive:false });
     logoTrigger.addEventListener("touchend", endHold);
     logoTrigger.addEventListener("touchcancel", endHold);
-
     logoTrigger.addEventListener("mousedown", startHold);
     logoTrigger.addEventListener("mouseup", endHold);
     logoTrigger.addEventListener("mouseleave", endHold);
   }
 
-  // ===== Locked/Unlocked UI (no bypass) =====
+  // Locked/unlocked UI
   function setLockedUI(){
     isUnlocked = false;
     if (numberEl) numberEl.textContent = "••• ••• ••••";
     if (copyBtn) copyBtn.disabled = true;
-
     if (smsLink) {
       smsLink.classList.add("disabled");
       smsLink.setAttribute("aria-disabled", "true");
       smsLink.href = "#";
     }
     if (copyMsg) copyMsg.textContent = "";
+    if (menuGrid) menuGrid.innerHTML = "";
+    if (menuStatus) menuStatus.textContent = "";
   }
 
   function setUnlockedUI(){
@@ -147,11 +149,14 @@ document.addEventListener("DOMContentLoaded", () => {
 
     showToast("Access granted.");
     setPressure("CLEARED");
+
+    // Load members menu
+    loadMenu();
   }
 
   setLockedUI();
 
-  // ===== ACCESS DENIED escalation =====
+  // Access denied escalation
   let wrongAttempts = 0;
 
   function shakeScreen(ms=550){
@@ -174,12 +179,11 @@ document.addEventListener("DOMContentLoaded", () => {
     overlay.innerHTML = `
       <div class="denied-box">
         <div class="denied-title">ACCESS DENIED</div>
-        <div class="denied-sub">Stop guessing. You’re being logged.</div>
+        <div class="denied-sub">Stop guessing.</div>
       </div>
     `;
     document.body.appendChild(overlay);
     shakeScreen(700);
-
     setTimeout(() => overlay.remove(), 1400);
   }
 
@@ -228,7 +232,7 @@ document.addEventListener("DOMContentLoaded", () => {
     if (e.key === "Enter") unlockAttempt();
   });
 
-  // ===== Copy guarded =====
+  // Copy guarded
   copyBtn?.addEventListener("click", async () => {
     if (!isUnlocked) return;
     try{
@@ -247,7 +251,131 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 
-  // ===== Pot leaf rain (cinematic) =====
+  // ===== Members Menu (from menu.json) =====
+  function escapeHtml(s=""){
+    return s.replace(/[&<>"']/g, (c) => ({
+      "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"
+    }[c]));
+  }
+
+  function isVideo(path=""){
+    return /\.(mp4|webm|ogg)$/i.test(path);
+  }
+
+  async function loadMenu(){
+    if (!menuGrid || !menuStatus) return;
+
+    menuStatus.textContent = "Loading menu...";
+    menuGrid.innerHTML = "";
+
+    try{
+      const res = await fetch(MENU_JSON_PATH, { cache: "no-store" });
+      if (!res.ok) throw new Error("menu.json not found");
+      const data = await res.json();
+
+      if (!Array.isArray(data.items)) throw new Error("menu.json format invalid");
+
+      const items = data.items;
+
+      if (items.length === 0) {
+        menuStatus.textContent = "Menu is empty. Add items to menu.json.";
+        return;
+      }
+
+      menuStatus.textContent = "";
+
+      for (const item of items) {
+        const cat = escapeHtml(item.category || "");
+        const name = escapeHtml(item.name || "");
+        const price = escapeHtml(item.price || "");
+        const desc = escapeHtml(item.desc || "");
+        const media = (item.media || "").trim();
+
+        const card = document.createElement("div");
+        card.className = "menu-item";
+
+        let mediaHtml = "";
+        if (media) {
+          if (isVideo(media)) {
+            mediaHtml = `
+              <div class="menu-media">
+                <video controls playsinline preload="metadata" src="${escapeHtml(media)}"></video>
+              </div>`;
+          } else {
+            mediaHtml = `
+              <div class="menu-media">
+                <img loading="lazy" src="${escapeHtml(media)}" alt="${name}" />
+              </div>`;
+          }
+        }
+
+        card.innerHTML = `
+          <div class="menu-top">
+            <div>
+              <div class="menu-name">${name}</div>
+              <div class="menu-cat">${cat}</div>
+            </div>
+            <div class="menu-price">${price}</div>
+          </div>
+          ${desc ? `<div class="menu-desc">${desc}</div>` : ""}
+          ${mediaHtml}
+        `;
+
+        menuGrid.appendChild(card);
+      }
+    } catch (err){
+      menuStatus.textContent = "Menu failed to load. Make sure menu.json exists in your repo root.";
+    }
+  }
+
+  // ===== Menu Manager (generate JSON item) =====
+  function buildItem(){
+    const item = {
+      category: (mCat?.value || "").trim(),
+      name: (mName?.value || "").trim(),
+      price: (mPrice?.value || "").trim(),
+      desc: (mDesc?.value || "").trim(),
+      media: (mMedia?.value || "").trim()
+    };
+
+    // remove empty fields
+    Object.keys(item).forEach(k => {
+      if (!item[k]) delete item[k];
+    });
+
+    return item;
+  }
+
+  genItemBtn?.addEventListener("click", () => {
+    if (!isUnlocked) return;
+
+    const item = buildItem();
+    if (!item.name || !item.price || !item.category) {
+      jsonOut.textContent = "Need at least: Category, Name, Price Text.";
+      copyItemBtn.disabled = true;
+      return;
+    }
+
+    const snippet = JSON.stringify(item, null, 2);
+    jsonOut.textContent = snippet + "\n";
+    copyItemBtn.disabled = false;
+    showToast("JSON generated.");
+  });
+
+  copyItemBtn?.addEventListener("click", async () => {
+    if (!isUnlocked) return;
+    const text = jsonOut.textContent || "";
+    if (!text.trim()) return;
+
+    try{
+      await navigator.clipboard.writeText(text.trim());
+      showToast("Copied JSON.");
+    } catch {
+      showToast("Copy failed.");
+    }
+  });
+
+  // ===== Pot leaf rain =====
   if (leafContainer) {
     const count = 26;
 
