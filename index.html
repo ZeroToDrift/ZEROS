@@ -9,16 +9,14 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;600;700&display=swap" rel="stylesheet">
 
-  <link rel="stylesheet" href="style.css?v=4200" />
+  <link rel="stylesheet" href="style.css?v=5000" />
 </head>
 
 <body>
   <div class="site-bg">
-    <!-- Leaves above background, below content -->
     <div class="leaf-rain" aria-hidden="true"></div>
 
     <main class="container">
-      <!-- Toast -->
       <div id="toast" class="toast hidden" aria-live="polite"></div>
 
       <!-- ===== PUBLIC ===== -->
@@ -26,7 +24,6 @@
         <header class="hero">
           <div class="kicker">PRESSURE SEASON</div>
 
-          <!-- Press & hold reveals Members -->
           <h1 class="logo no-zoom" id="logoTrigger" role="button" tabindex="0">
             ZEROS<span class="tm">™</span>
           </h1>
@@ -66,10 +63,11 @@
         <header class="hero" style="margin-top:22px;">
           <div class="kicker">MEMBERS ONLY</div>
           <h2 class="members-title">Private Access</h2>
-          <p class="tagline">Enter the password to unlock the members line.</p>
+          <p class="tagline">Enter the password to unlock the members line + full menu.</p>
         </header>
 
         <section class="card">
+          <!-- Password Gate -->
           <div id="gate" class="gate">
             <label class="label" for="memberPass">Password</label>
 
@@ -90,6 +88,7 @@
             <p id="gateMsg" class="helper"></p>
           </div>
 
+          <!-- Members Content -->
           <div id="memberContent" class="hidden">
             <div class="member-label">Members Line</div>
             <div id="burnerNumber" class="member-number">••• ••• ••••</div>
@@ -100,13 +99,63 @@
             </div>
 
             <p id="copyMsg" class="helper"></p>
+
+            <hr class="hr" />
+
+            <!-- MEMBERS MENU -->
+            <div class="member-label">Members Menu (Old Fashion Way)</div>
+            <p class="helper" style="margin-top:8px;">
+              Prices are visible here. Random deal drops may appear.
+            </p>
+
+            <div id="menuStatus" class="helper"></div>
+            <div id="menuGrid" class="menu-grid"></div>
+
+            <hr class="hr" />
+
+            <!-- MENU MANAGER (helps you add items + generate JSON) -->
+            <details class="manager">
+              <summary class="manager-summary">Menu Manager (Owner)</summary>
+
+              <div class="manager-body">
+                <p class="helper">
+                  GitHub Pages can’t “upload” to the server automatically.
+                  This tool helps you create menu entries. Then you drop your photo/video into <span class="mono">/media</span> in your repo and paste the JSON into <span class="mono">menu.json</span>.
+                </p>
+
+                <div class="form-grid">
+                  <label class="label">Category
+                    <input id="mCat" class="input" placeholder="Flower / Disposables / Concentrates..." />
+                  </label>
+                  <label class="label">Name
+                    <input id="mName" class="input" placeholder="RUNTZ" />
+                  </label>
+                  <label class="label">Price Text
+                    <input id="mPrice" class="input" placeholder='3.5g $30 • 7g $55 • OZ $180' />
+                  </label>
+                  <label class="label">Description (optional)
+                    <input id="mDesc" class="input" placeholder="Gas, sweet, heavy hitter..." />
+                  </label>
+                  <label class="label">Media Path (optional)
+                    <input id="mMedia" class="input" placeholder='media/runtz.jpg  OR  media/runtz.mp4' />
+                  </label>
+                </div>
+
+                <div class="row" style="margin-top:12px;">
+                  <button id="genItemBtn" class="btn primary" type="button">Generate JSON Item</button>
+                  <button id="copyItemBtn" class="btn" type="button" disabled>Copy JSON</button>
+                </div>
+
+                <pre id="jsonOut" class="json-out"></pre>
+              </div>
+            </details>
+
           </div>
         </section>
       </section>
-
     </main>
   </div>
 
-  <script src="script.js?v=4200"></script>
+  <script src="script.js?v=5000"></script>
 </body>
 </html>
