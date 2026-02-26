@@ -1,318 +1,287 @@
-const PASSWORD = "BigJigglyBalls";
-const MEMBER_LINE = "646 332-9902";
-const HOLD_MS = 700;
+document.addEventListener("DOMContentLoaded", () => {
+  const MEMBER_PASSWORD = "BigJigglyBalls";
+  const MEMBERS_NUMBER = "(646) 444-4277";
 
-const toast = document.getElementById("toast");
-const zerosLogo = document.getElementById("zerosLogo");
-const membersOverlay = document.getElementById("membersOverlay");
-const pwInput = document.getElementById("pwInput");
-const pwBtn = document.getElementById("pwBtn");
-const pwMsg = document.getElementById("pwMsg");
+  const logoTrigger = document.getElementById("logoTrigger");
+  const membersSection = document.getElementById("members");
 
-const lockedBox = document.getElementById("membersLocked");
-const unlockedBox = document.getElementById("membersUnlocked");
+  const toast = document.getElementById("toast");
+  const pressureEl = document.getElementById("pressureLevel");
+  const cultEl = document.getElementById("cultLine");
+  const taglineEl = document.getElementById("taglineText");
 
-const copyBtn = document.getElementById("copyBtn");
-const textBtn = document.getElementById("textBtn");
-const lockBtn = document.getElementById("lockBtn");
-const memberLineEl = document.getElementById("memberLine");
+  const gate = document.getElementById("gate");
+  const memberContent = document.getElementById("memberContent");
+  const passInput = document.getElementById("memberPass");
+  const unlockBtn = document.getElementById("unlockBtn");
+  const gateMsg = document.getElementById("gateMsg");
 
-const liveMenuMount = document.getElementById("liveMenuMount");
+  const numberEl = document.getElementById("burnerNumber");
+  const copyBtn = document.getElementById("copyBtn");
+  const copyMsg = document.getElementById("copyMsg");
+  const smsLink = document.getElementById("smsLink");
 
-const lockedSplash = document.getElementById("lockedSplash");
-const publicMenu = document.getElementById("publicMenu");
+  const leafContainer = document.querySelector(".leaf-rain");
 
-let holdTimer = null;
-let isUnlocked = false;
+  let isUnlocked = false;
 
-function showToast(msg = "JS ONLINE") {
-  toast.textContent = msg;
-  toast.classList.add("show");
-  setTimeout(() => toast.classList.remove("show"), 1400);
-}
+  function showToast(msg){
+    if (!toast) return;
+    toast.textContent = msg;
+    toast.classList.remove("hidden");
+    setTimeout(() => toast.classList.add("hidden"), 1200);
+  }
 
-function openMembers() {
-  membersOverlay.classList.remove("hidden");
-  membersOverlay.setAttribute("aria-hidden", "false");
-  setTimeout(() => pwInput?.focus(), 0);
-}
-function closeMembers() {
-  membersOverlay.classList.add("hidden");
-  membersOverlay.setAttribute("aria-hidden", "true");
-}
+  function setPressure(state){
+    if (!pressureEl) return;
+    pressureEl.textContent = `PRESSURE LEVEL: ${state}`;
+  }
 
-function normalize(s) { return (s || "").trim(); }
+  // Prove JS is running
+  showToast("JS ONLINE");
 
-/* ===== Live items (media injected only after unlock) ===== */
-const LIVE_ITEMS = [
-  { id:"runtz-35", category:"Flower", name:"RUNTZ", price:"3.5g $30", details:"Sweet gas • colorful nugs • smooth smoke", stockNote:"", mediaType:"image", mediaSrc:"media/runtz.jpg" },
-  { id:"lcg-35", category:"Flower", name:"Lemon Cherry Gumbo", price:"3.5g $25", details:"Citrus + candy • chill body", stockNote:"", mediaType:"image", mediaSrc:"media/lemon-cherry-gumbo.jpg" },
-  { id:"smoothie-2g", category:"Disposables", name:"Smoothie Bar", price:"2g $40", details:"Smooth pull • fruity finish", stockNote:"Only 1 left", mediaType:"video", mediaSrc:"media/smoothie-bar.mp4" },
-  { id:"boutiq-v5", category:"Disposables", name:"BOUTIQ SWITCH V5", price:"Triple Tank 2G $45", details:"Heavy clouds • consistent hit", stockNote:"", mediaType:"video", mediaSrc:"media/boutiq-switch-v5.mp4" },
-  { id:"lemon-skunk-live", category:"Concentrates", name:"Lemon Skunk — Live Resin", price:"1g $25", details:"Loud terp profile • clean melt", stockNote:"", mediaType:"image", mediaSrc:"media/lemon-skunk-live-resin.jpg" },
-  { id:"empire-papers", category:"Accessories", name:"Empire Papers", price:"$3", details:"Clean burn • slow roll", stockNote:"", mediaType:"image", mediaSrc:"media/empire-papers.jpg" },
-  { id:"rolling-tray", category:"Accessories", name:"Rolling Trays", price:"$10", details:"Keeps it neat • portable", stockNote:"", mediaType:"image", mediaSrc:"media/rolling-tray.jpg" }
-];
+  // ===== Time theme (After Dark 10PM–5AM) =====
+  const hour = new Date().getHours();
+  const afterDark = (hour >= 22 || hour < 5);
+  if (afterDark) {
+    document.body.classList.add("after-dark");
+    if (taglineEl) taglineEl.textContent = "After Hours Protocol Active.";
+  }
 
-function escapeHtml(str) {
-  return (str ?? "").toString()
-    .replaceAll("&", "&amp;")
-    .replaceAll("<", "&lt;")
-    .replaceAll(">", "&gt;")
-    .replaceAll('"', "&quot;")
-    .replaceAll("'", "&#039;");
-}
-function escapeAttr(str) { return escapeHtml(str).replaceAll("`", "&#096;"); }
+  // ===== Cult phrases =====
+  const cultPhrases = afterDark
+    ? [
+        "We see you.",
+        "Keep your voice low.",
+        "You’re closer than you think.",
+        "Not everyone gets in.",
+        "You weren’t supposed to find this.",
+        "Don’t repeat what you learn here."
+      ]
+    : [
+        "Members move in silence.",
+        "Stay discreet.",
+        "Access is earned.",
+        "Not everyone gets in.",
+        "Say less."
+      ];
 
-function buildLiveMenuShell() {
-  const wrap = document.createElement("section");
-  wrap.className = "liveMenu";
-  wrap.id = "liveMenu";
+  function rotateCult(){
+    if (!cultEl) return;
+    cultEl.textContent = cultPhrases[Math.floor(Math.random() * cultPhrases.length)];
+  }
+  rotateCult();
+  setInterval(rotateCult, 9000);
 
-  wrap.innerHTML = `
-    <div class="liveMenu__head">
-      <div style="display:flex;align-items:center;gap:10px;">
-        <span class="dot"></span>
-        <strong style="letter-spacing:.14em;text-transform:uppercase;">LIVE MENU</strong>
-        <span style="padding:6px 10px;border-radius:999px;border:1px solid rgba(255,255,255,.14);background:rgba(0,0,0,.22);font-size:12px;opacity:.9;">Members Only</span>
-      </div>
-      <div class="filters" id="filters">
-        ${["All","Flower","Disposables","Concentrates","Accessories"].map((c,i)=>`
-          <button type="button" class="filterBtn ${i===0?"active":""}" data-filter="${c}">${c}</button>
-        `).join("")}
-      </div>
-    </div>
-    <div class="menuGrid" id="menuGrid"></div>
-  `;
-  return wrap;
-}
+  // ===== Pressure behavior =====
+  setPressure("STABLE");
+  let scrollTimer = null;
+  window.addEventListener("scroll", () => {
+    setPressure("RISING");
+    clearTimeout(scrollTimer);
+    scrollTimer = setTimeout(() => setPressure("STABLE"), 900);
+  }, { passive: true });
 
-function renderMenuItems(filter="All") {
-  const grid = document.getElementById("menuGrid");
-  if (!grid) return;
+  // ===== Members reveal (press & hold 1.2s) =====
+  let holdTimer = null;
+  let holding = false;
 
-  const items = LIVE_ITEMS.filter(it => filter==="All" ? true : it.category===filter);
-  grid.innerHTML = "";
+  function revealMembers(){
+    if (!membersSection) return;
+    membersSection.classList.remove("hidden");
+    showToast("Members unlocked.");
+    setPressure("ELEVATED");
+    setTimeout(() => membersSection.scrollIntoView({ behavior: "smooth", block: "start" }), 150);
+    setTimeout(() => passInput?.focus(), 400);
+  }
 
-  for (const it of items) {
-    const card = document.createElement("div");
-    card.className = "itemCard";
+  function startHold(e){
+    e.preventDefault();
+    if (holding) return;
+    holding = true;
+    holdTimer = setTimeout(revealMembers, 1200);
+  }
 
-    const low = it.stockNote && it.stockNote.toLowerCase().includes("only");
-    const badgeHtml = it.stockNote ? `<div class="badge ${low ? "low" : ""}">${escapeHtml(it.stockNote)}</div>` : "";
+  function endHold(){
+    holding = false;
+    clearTimeout(holdTimer);
+  }
 
-    const mediaHtml = it.mediaType === "video"
-      ? `<video muted loop playsinline preload="none" data-src="${escapeAttr(it.mediaSrc)}"><source data-src="${escapeAttr(it.mediaSrc)}" type="video/mp4"></video>`
-      : `<img alt="${escapeAttr(it.name)}" loading="lazy" data-src="${escapeAttr(it.mediaSrc)}" />`;
+  if (logoTrigger) {
+    logoTrigger.addEventListener("touchstart", startHold, { passive:false });
+    logoTrigger.addEventListener("touchend", endHold);
+    logoTrigger.addEventListener("touchcancel", endHold);
 
-    card.innerHTML = `
-      <div class="mediaBox">
-        ${badgeHtml}
-        ${it.mediaSrc ? mediaHtml : `<div style="width:100%;height:100%;display:grid;place-items:center;opacity:.65;font-size:12px;">NO MEDIA YET</div>`}
-      </div>
-      <div class="itemBody">
-        <p class="itemTitle">${escapeHtml(it.name)}</p>
-        <div class="itemMeta">
-          <span>${escapeHtml(it.category)}</span>
-          <span>${escapeHtml(it.price)}</span>
-        </div>
-        <p class="itemDesc">${escapeHtml(it.details)}</p>
+    logoTrigger.addEventListener("mousedown", startHold);
+    logoTrigger.addEventListener("mouseup", endHold);
+    logoTrigger.addEventListener("mouseleave", endHold);
+  }
+
+  // ===== Locked/Unlocked UI (no bypass) =====
+  function setLockedUI(){
+    isUnlocked = false;
+    if (numberEl) numberEl.textContent = "••• ••• ••••";
+    if (copyBtn) copyBtn.disabled = true;
+
+    if (smsLink) {
+      smsLink.classList.add("disabled");
+      smsLink.setAttribute("aria-disabled", "true");
+      smsLink.href = "#";
+    }
+    if (copyMsg) copyMsg.textContent = "";
+  }
+
+  function setUnlockedUI(){
+    isUnlocked = true;
+    gate?.classList.add("hidden");
+    memberContent?.classList.remove("hidden");
+
+    if (numberEl) numberEl.textContent = MEMBERS_NUMBER;
+    if (copyBtn) copyBtn.disabled = false;
+
+    if (smsLink) {
+      smsLink.classList.remove("disabled");
+      smsLink.removeAttribute("aria-disabled");
+      smsLink.href = `sms:${encodeURIComponent(MEMBERS_NUMBER)}`;
+    }
+
+    showToast("Access granted.");
+    setPressure("CLEARED");
+  }
+
+  setLockedUI();
+
+  // ===== ACCESS DENIED escalation =====
+  let wrongAttempts = 0;
+
+  function shakeScreen(ms=550){
+    const start = performance.now();
+    function step(t){
+      const dt = t - start;
+      const strength = Math.max(0, 1 - dt / ms);
+      const x = (Math.random() - 0.5) * 18 * strength;
+      const y = (Math.random() - 0.5) * 18 * strength;
+      document.documentElement.style.transform = `translate(${x}px, ${y}px)`;
+      if (dt < ms) requestAnimationFrame(step);
+      else document.documentElement.style.transform = "";
+    }
+    requestAnimationFrame(step);
+  }
+
+  function showDeniedOverlay(){
+    const overlay = document.createElement("div");
+    overlay.className = "denied-overlay";
+    overlay.innerHTML = `
+      <div class="denied-box">
+        <div class="denied-title">ACCESS DENIED</div>
+        <div class="denied-sub">Stop guessing. You’re being logged.</div>
       </div>
     `;
+    document.body.appendChild(overlay);
+    shakeScreen(700);
 
-    grid.appendChild(card);
+    setTimeout(() => overlay.remove(), 1400);
   }
 
-  if (isUnlocked) loadVisibleMedia();
-}
+  function unlockAttempt(){
+    const attempt = (passInput?.value || "").normalize("NFKC").trim();
 
-function loadVisibleMedia() {
-  document.querySelectorAll("#liveMenu img[data-src]").forEach(img => {
-    const src = img.getAttribute("data-src");
-    if (!src) return;
-    img.src = src;
-    img.removeAttribute("data-src");
-  });
-
-  document.querySelectorAll("#liveMenu video").forEach(v => {
-    const source = v.querySelector("source");
-    const src = source?.getAttribute("data-src") || v.getAttribute("data-src");
-    if (!src) return;
-
-    if (source && source.getAttribute("data-src")) {
-      source.src = src;
-      source.removeAttribute("data-src");
+    if (!attempt) {
+      if (gateMsg) gateMsg.textContent = "Enter the password.";
+      return;
     }
-    if (v.getAttribute("data-src")) v.removeAttribute("data-src");
 
-    try { v.load(); v.play().catch(()=>{}); } catch(_){}
+    if (attempt === MEMBER_PASSWORD) {
+      wrongAttempts = 0;
+      if (gateMsg) gateMsg.textContent = "";
+      setUnlockedUI();
+      return;
+    }
+
+    wrongAttempts++;
+
+    if (gateMsg) {
+      if (wrongAttempts === 1) gateMsg.textContent = "WRONG PASSWORD.";
+      else if (wrongAttempts === 2) gateMsg.textContent = "Try that again… slower.";
+      else if (wrongAttempts === 3) gateMsg.textContent = "You’re testing limits.";
+      else if (wrongAttempts === 4) gateMsg.textContent = "Last warning.";
+      else gateMsg.textContent = "";
+    }
+
+    if (wrongAttempts >= 3) setPressure("MONITORED");
+    else setPressure("ELEVATED");
+
+    if (wrongAttempts >= 5) {
+      showDeniedOverlay();
+      wrongAttempts = 0;
+      setPressure("DENIED");
+    }
+
+    if (passInput) {
+      passInput.value = "";
+      passInput.focus();
+    }
+  }
+
+  unlockBtn?.addEventListener("click", unlockAttempt);
+  passInput?.addEventListener("keydown", (e) => {
+    if (e.key === "Enter") unlockAttempt();
   });
-}
 
-function mountLiveMenu() {
-  if (document.getElementById("liveMenu")) return;
-
-  const shell = buildLiveMenuShell();
-  liveMenuMount.appendChild(shell);
-
-  const filters = document.getElementById("filters");
-  filters?.addEventListener("click", (e) => {
-    const btn = e.target?.closest?.("button[data-filter]");
-    if (!btn) return;
-    filters.querySelectorAll(".filterBtn").forEach(b => b.classList.remove("active"));
-    btn.classList.add("active");
-    renderMenuItems(btn.getAttribute("data-filter") || "All");
+  // ===== Copy guarded =====
+  copyBtn?.addEventListener("click", async () => {
+    if (!isUnlocked) return;
+    try{
+      await navigator.clipboard.writeText(MEMBERS_NUMBER);
+      if (copyMsg) copyMsg.textContent = "Copied.";
+      setTimeout(() => { if (copyMsg) copyMsg.textContent = ""; }, 1200);
+    } catch {
+      const ta = document.createElement("textarea");
+      ta.value = MEMBERS_NUMBER;
+      document.body.appendChild(ta);
+      ta.select();
+      document.execCommand("copy");
+      document.body.removeChild(ta);
+      if (copyMsg) copyMsg.textContent = "Copied.";
+      setTimeout(() => { if (copyMsg) copyMsg.textContent = ""; }, 1200);
+    }
   });
 
-  renderMenuItems("All");
-  loadVisibleMedia();
-}
+  // ===== Pot leaf rain (cinematic) =====
+  if (leafContainer) {
+    const count = 26;
 
-/* ===== Unlock / Lock ===== */
-function setUnlockedUI() {
-  lockedSplash.classList.add("hidden");
-  publicMenu.classList.remove("hidden");
+    const svgMarkup = `
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" class="leaf-svg">
+        <path fill="currentColor" d="M32 4c2 8 3 16 2 24 4-6 10-11 18-14-5 10-10 18-18 24 6-1 13-1 22 2-9 6-17 9-24 8 5 5 9 12 10 22-9-5-15-11-18-18-3 7-9 13-18 18 1-10 5-17 10-22-7 1-15-2-24-8 9-3 16-3 22-2-8-6-13-14-18-24 8 3 14 8 18 14-1-8 0-16 2-24z"/>
+        <path fill="currentColor" d="M31 26c0 10-1 20-3 30h8c-2-10-3-20-3-30h-2z" opacity="0.9"/>
+      </svg>
+    `;
 
-  lockedBox.classList.add("hidden");
-  unlockedBox.classList.remove("hidden");
+    leafContainer.innerHTML = "";
 
-  memberLineEl.textContent = MEMBER_LINE;
-  textBtn.setAttribute("href", "sms:" + MEMBER_LINE.replace(/\s+/g, ""));
+    for (let i = 0; i < count; i++) {
+      const leaf = document.createElement("div");
+      leaf.className = "leaf";
+      leaf.innerHTML = svgMarkup;
 
-  mountLiveMenu();
-}
+      leaf.style.left = (Math.random() * 100) + "vw";
+      leaf.style.top  = (-Math.random() * 140) + "vh";
 
-function unlock() {
-  isUnlocked = true;
-  localStorage.setItem("zeros_members_unlocked", "1");
+      const size = 10 + Math.random() * 14;
+      leaf.style.width  = size + "px";
+      leaf.style.height = size + "px";
 
-  pwMsg.textContent = "";
-  pwInput.value = "";
+      leaf.style.opacity = (0.06 + Math.random() * 0.08).toFixed(2);
+      leaf.style.animationDuration = (18 + Math.random() * 22) + "s";
+      leaf.style.animationDelay    = (Math.random() * 8) + "s";
 
-  showToast("MEMBERS UNLOCKED");
-  setUnlockedUI();
-}
+      leaf.style.setProperty("--drift", (Math.random() * 160 - 80).toFixed(0) + "px");
+      leaf.style.setProperty("--rot0",  (Math.random() * 360).toFixed(0) + "deg");
+      leaf.style.setProperty("--rot1",  (Math.random() * 720 - 360).toFixed(0) + "deg");
+      leaf.style.setProperty("--blur",  (Math.random() < 0.35 ? (0.6 + Math.random() * 1.4).toFixed(1) : "0") + "px");
 
-function lockBack() {
-  isUnlocked = false;
-  localStorage.removeItem("zeros_members_unlocked");
-
-  // remove live menu from DOM
-  const live = document.getElementById("liveMenu");
-  if (live) live.remove();
-  liveMenuMount.innerHTML = "";
-
-  // UI back to locked
-  lockedSplash.classList.remove("hidden");
-  publicMenu.classList.add("hidden");
-
-  lockedBox.classList.remove("hidden");
-  unlockedBox.classList.add("hidden");
-
-  showToast("LOCKED");
-  closeMembers();
-}
-
-function tryUnlock() {
-  const entered = normalize(pwInput.value);
-  if (!entered) { pwMsg.textContent = "Enter the password."; return; }
-  if (entered === PASSWORD) unlock();
-  else { pwMsg.textContent = "Wrong password."; showToast("ACCESS DENIED"); }
-}
-
-/* ===== Press & hold ===== */
-function startHold() {
-  clearTimeout(holdTimer);
-  holdTimer = setTimeout(() => {
-    openMembers();
-    showToast("MEMBERS");
-  }, HOLD_MS);
-}
-function cancelHold() { clearTimeout(holdTimer); }
-
-zerosLogo.addEventListener("mousedown", startHold);
-zerosLogo.addEventListener("mouseup", cancelHold);
-zerosLogo.addEventListener("mouseleave", cancelHold);
-
-zerosLogo.addEventListener("touchstart", (e) => { e.preventDefault(); startHold(); }, { passive:false });
-zerosLogo.addEventListener("touchend", cancelHold);
-zerosLogo.addEventListener("touchcancel", cancelHold);
-
-/* Overlay close */
-membersOverlay.addEventListener("click", (e) => {
-  if (e.target?.getAttribute?.("data-close")) closeMembers();
-});
-document.addEventListener("keydown", (e) => {
-  if (!membersOverlay.classList.contains("hidden") && e.key === "Escape") closeMembers();
-});
-
-/* Unlock controls */
-pwBtn.addEventListener("click", tryUnlock);
-pwInput.addEventListener("keydown", (e) => { if (e.key === "Enter") tryUnlock(); });
-
-lockBtn.addEventListener("click", lockBack);
-
-/* Copy */
-copyBtn.addEventListener("click", async () => {
-  try {
-    await navigator.clipboard.writeText(MEMBER_LINE);
-    showToast("COPIED");
-  } catch (_) {
-    const ta = document.createElement("textarea");
-    ta.value = MEMBER_LINE;
-    document.body.appendChild(ta);
-    ta.select();
-    document.execCommand("copy");
-    document.body.removeChild(ta);
-    showToast("COPIED");
+      leafContainer.appendChild(leaf);
+    }
   }
 });
-
-/* Leaf rain */
-function makeLeaf() {
-  const leaf = document.createElement("div");
-  leaf.className = "leaf";
-
-  leaf.style.left = (Math.random() * 100) + "vw";
-  leaf.style.animationDuration = (6 + Math.random() * 8) + "s";
-  leaf.style.animationDelay = (Math.random() * 4) + "s";
-  leaf.style.opacity = (0.10 + Math.random() * 0.22).toFixed(2);
-
-  const size = 18 + Math.random() * 18;
-  leaf.innerHTML = `
-    <svg style="width:${size}px;height:${size}px;" viewBox="0 0 64 64" aria-hidden="true">
-      <use href="#leafIcon"></use>
-    </svg>
-  `;
-  return leaf;
-}
-
-function initLeafRain() {
-  const rain = document.getElementById("leafRain");
-  if (!rain) return;
-
-  for (let i = 0; i < 26; i++) {
-    const leaf = makeLeaf();
-    rain.appendChild(leaf);
-    leaf.addEventListener("animationend", () => {
-      leaf.remove();
-      rain.appendChild(makeLeaf());
-    });
-  }
-}
-
-/* Boot */
-(function boot(){
-  showToast("JS ONLINE");
-  initLeafRain();
-
-  // If already unlocked from last time, skip password
-  if (localStorage.getItem("zeros_members_unlocked") === "1") {
-    isUnlocked = true;
-    setUnlockedUI();
-  } else {
-    // keep it locked on load
-    lockedSplash.classList.remove("hidden");
-    publicMenu.classList.add("hidden");
-  }
-})();
