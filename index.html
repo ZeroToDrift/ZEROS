@@ -8,14 +8,12 @@
 </head>
 
 <body>
-  <!-- Background -->
   <div class="bg"></div>
 
   <!-- Pot-leaf rain layer (above bg, below content) -->
   <div class="leaf-layer" aria-hidden="true">
     <svg id="leafSvg" width="0" height="0" style="position:absolute">
       <defs>
-        <!-- simple pot-leaf-ish icon -->
         <symbol id="leafIcon" viewBox="0 0 64 64">
           <path d="M32 6c2 8 1 14-1 18 4-4 10-7 18-8-4 7-9 11-14 13 6 0 12 2 17 7-7 2-13 2-18 1 4 4 7 10 8 18-7-4-11-9-13-14 0 6-2 12-7 17-2-7-2-13-1-18-4 4-10 7-18 8 4-7 9-11 14-13-6 0-12-2-17-7 7-2 13-2 18-1-4-4-7-10-8-18 7 4 11 9 13 14z"/>
         </symbol>
@@ -24,14 +22,11 @@
     <div id="leafRain"></div>
   </div>
 
-  <!-- Toast -->
   <div id="toast" class="toast" role="status" aria-live="polite">JS ONLINE</div>
 
-  <!-- Main -->
   <main class="wrap">
     <header class="top">
       <div class="brand">
-        <!-- Press & hold this -->
         <button id="zerosLogo" class="logo" type="button" aria-label="ZEROS (press and hold)">
           <span class="logo__glow">ZEROS</span>
           <span class="logo__sub">PRESSURE SEASON</span>
@@ -44,9 +39,27 @@
       </div>
     </header>
 
-    <section class="panel">
+    <!-- LOCKED SPLASH (shows until password is correct) -->
+    <section id="lockedSplash" class="panel">
+      <h1 class="h1">LOCKED</h1>
+      <p class="muted">This site is Members-only.</p>
+
+      <div class="lockBox">
+        <div class="lockBox__row">
+          <span class="dot"></span>
+          <span class="lockBox__title">Enter Members Vault</span>
+        </div>
+        <p class="lockBox__text">
+          Press & hold the <strong>ZEROS</strong> logo to open the password gate.
+        </p>
+        <div class="lockBox__hint">Hint: if you’re authorized, you already know it.</div>
+      </div>
+    </section>
+
+    <!-- PUBLIC MENU (hidden until unlock) -->
+    <section id="publicMenu" class="panel hidden">
       <h1 class="h1">ZEROS MENU</h1>
-      <p class="muted">Tap and browse. Members get the real-time catalog.</p>
+      <p class="muted">Unlocked. Members get the live media catalog.</p>
 
       <div class="grid">
         <div class="card">
@@ -116,7 +129,7 @@
       </div>
 
       <div id="membersLocked" class="members__locked">
-        <p class="muted">Enter password to unlock the member line + live menu.</p>
+        <p class="muted">Enter password to unlock.</p>
         <div class="pw">
           <input id="pwInput" type="password" placeholder="Password" autocomplete="off" />
           <button id="pwBtn" type="button" class="btn">Unlock</button>
@@ -132,15 +145,14 @@
           <div class="lineBox__actions">
             <button id="copyBtn" class="btn btn--ghost" type="button">Copy</button>
             <a id="textBtn" class="btn" href="#" role="button">Text</a>
+            <button id="lockBtn" class="btn btn--ghost" type="button">Lock</button>
           </div>
         </div>
 
-        <!-- Live Menu gets INJECTED HERE ONLY after correct password -->
+        <!-- Live Menu gets injected here ONLY after correct password -->
         <div id="liveMenuMount"></div>
 
-        <div class="tiny muted">
-          Inventory can change fast. Members get first access.
-        </div>
+        <div class="tiny muted">Inventory can change fast. Members get first access.</div>
       </div>
     </section>
   </div>
